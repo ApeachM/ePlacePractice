@@ -1,6 +1,9 @@
 #include <iostream>
+#include "Circuit.h"
 
+using namespace std;
+using namespace ePlace;
 int main() {
-    std::cout << "Hello, World!" << std::endl;
-    return 0;
+  Circuit circuit;
+
 }
