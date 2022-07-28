@@ -67,7 +67,8 @@ class Circuit : public Parser {
 
       theCell.x = this->defComponentStor[i].x_;
       theCell.y = this->defComponentStor[i].y_;
-      theCell.name = this->defComponentStor[i].name_; //name of the cell
+      theCell.libName = this->defComponentStor[i].name_;  // library(Macro) name of the cell (ex. "NOR4X4")
+      theCell.instName = this->defComponentStor[i].id_;  // instance name (ex. "inst8879")
       //macroname=theCell.name;
 
       //component 종류 파악, size 대입
@@ -75,7 +76,8 @@ class Circuit : public Parser {
 
       for (int j = 0; j < this->lefMacroStor.size(); j++) {
         //cout<<lefMacroStor[i].name_<<endl;
-        if (strcmp(theCell.name, lefMacroStor[j].name_) == 0) {
+        string libName = lefMacroStor[j].name_;
+        if (theCell.libName == libName) {
           theCell.size_x = this->lefMacroStor[j].sizeX_;
           theCell.size_y = this->lefMacroStor[j].sizeY_;
           break;

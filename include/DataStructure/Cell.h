@@ -8,7 +8,8 @@ class Cell {
  public:
   int x, y;
   float size_x, size_y;
-  char *name;
+  string libName;
+  string instName;
   int connected_net;
 
 };
