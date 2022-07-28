@@ -99,8 +99,21 @@ class Circuit : public Parser {
 
   void addNetList() {
 
-    NET theNet;
-    int netnum;
+    int netNumber = this->defNetStor.size();
+    string netName, theCellName;
+    Cell* theCell = nullptr;
+    for (int i = 0; i < netNumber; ++i) {
+      NET theNet;  // constructor should be called every for loop
+      theNet.name = this->defNetStor[i].name();  // name_ variable return
+      for (int j = 0; j < this->defNetStor[i].numConnections(); ++j) {
+        theCellName = this->defNetStor[i].instance(j);
+//        theCell = this->cellDictionary.at(theCellName);
+        theCell = this->cellDictionary[theCellName];
+        theNet.connectedCells.push_back(theCell);
+      }
+      this->net_list.push_back(theNet);
+      this->netDictionary[theNet.name] = &this->net_list.back();
+    }
 
     /*
     for(int i=0;i<this->defComponentStor.size())/2;i++)
