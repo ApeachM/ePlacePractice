@@ -16,9 +16,8 @@ class Cell {
 
 class NET {
  public:
-  int connected_cell1;
-  int connected_cell2;
-
+  string name;
+  vector<Cell*> connectedCells;
 };
 
 #endif //EPLACEPRACTICE_SRC_DATASTRUCTURE_CELL_H_
