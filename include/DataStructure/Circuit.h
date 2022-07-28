@@ -33,6 +33,7 @@
 
 #ifndef EPLACEPRACTICE_SRC_DATASTRUCTURE_PARSER_CIRCUIT_H_
 #define EPLACEPRACTICE_SRC_DATASTRUCTURE_PARSER_CIRCUIT_H_
+#include <unordered_map>
 #include "Parser.h"
 #include "Cell.h"
 
@@ -41,6 +42,9 @@ class Circuit : public Parser {
  public:
   vector<Cell> cell_list;
   vector<NET> net_list;
+
+  unordered_map<string, Cell*> cellDictionary;  // this data type is similar with dictionary in python
+  unordered_map<string, NET*> netDictionary;
 
   void parsing(string lefName, string defName) {
     // parse lef
@@ -58,6 +62,7 @@ class Circuit : public Parser {
 //    cout<<this->defComponentStor[0]. <<endl;
 
     //<LefDefParser::defiComponent>::iterator iter;
+    this->cell_list.reserve(this->defComponentStor.size());
     for (int i = 0; i < this->defComponentStor.size(); i++) {
 
       Cell theCell;
@@ -87,6 +92,7 @@ class Circuit : public Parser {
       theCell.connected_net = this->defComponentStor[i].netsAllocated_;
 
       this->cell_list.push_back(theCell);
+      this->cellDictionary[theCell.instName] = &this->cell_list.back();
 
     }
   }
