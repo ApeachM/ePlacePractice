@@ -42,7 +42,6 @@
     }                              \
   }
 
-
 #include <iostream>
 #include <string>
 #include <vector>
@@ -62,7 +61,6 @@
 
 #include <defrReader.hpp>
 #include <defiAlias.hpp>
-
 
 #define HASH_MAP std::unordered_map
 
@@ -155,8 +153,8 @@ class Parser {
   void DumpLefSite();
   void DumpLefMacro();
 
-  void DumpLefPin(lefiPin* pin);
-  void DumpLefObs(lefiObstruction* obs);
+  void DumpLefPin(lefiPin *pin);
+  void DumpLefObs(lefiObstruction *obs);
 
   void DumpLefVia();
   void DumpLefDone();
@@ -191,9 +189,8 @@ class Parser {
 
  public:
   // Parsing Function
-  int ParseLef(vector< string >& lefStor);
+  int ParseLef(vector<string> &lefStor);
   int ParseDef(string filename);
-
 
 };
 
