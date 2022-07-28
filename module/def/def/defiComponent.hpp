@@ -177,7 +177,7 @@ public:
   void bumpMaxLayer(int size);
   void bumpFori(int size);
 
-protected:
+ public:
   char* id_;            // instance id
   char* name_;          // name.
   int nameSize_;        // allocated size of name.

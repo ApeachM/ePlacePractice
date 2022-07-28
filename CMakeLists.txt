@@ -12,7 +12,8 @@ set(ENV{TYPE_CALL} library)
 
 file(GLOB_RECURSE DataStructure
         src/DataStructure/Circuit.cpp
-        src/DataStructure/Parser.cpp)
+        src/DataStructure/Parser.cpp
+        src/DataStructure/Cell.cpp)
 
 add_subdirectory(${DEFLIB_HOME})
 add_subdirectory(${LEFLIB_HOME})

@@ -34,11 +34,88 @@
 #ifndef EPLACEPRACTICE_SRC_DATASTRUCTURE_PARSER_CIRCUIT_H_
 #define EPLACEPRACTICE_SRC_DATASTRUCTURE_PARSER_CIRCUIT_H_
 #include "Parser.h"
-namespace ePlace{
+#include "Cell.h"
+
+namespace ePlace {
 class Circuit : public Parser {
+ public:
+  vector<Cell> cell_list;
+  vector <NET> net_list;
+
+  void parsing(string lefName, string defName) {
+    // parse lef
+    vector<string> lefStor;
+    lefStor.push_back(lefName);
+    this->ParseLef(lefStor);
+
+    // parse def
+    this->ParseDef(defName);
+  }
+
+
+  void addCellList(){
+    //cout<<defComponentStor.size()<<endl;
+    //cout<<lefMacroStor.size()<<endl;
+//    cout<<this->defComponentStor[0]. <<endl;
+
+    //<LefDefParser::defiComponent>::iterator iter;
+    for (int i=0;i<this->defComponentStor.size();i++)
+    {
+
+      Cell theCell;
+      theCell.x = 0;
+      theCell.y = 0;
+      theCell.connected_net=0;
+
+      theCell.x = this->defComponentStor[i].x_;
+      theCell.y = this->defComponentStor[i].y_;
+      theCell.name=this->defComponentStor[i].name_; //name of the cell
+      //macroname=theCell.name;
+
+      //component 종류 파악, size 대입
+
+
+      for(int j=0;j<this->lefMacroStor.size();j++)
+      {
+        //cout<<lefMacroStor[i].name_<<endl;
+        if(strcmp(theCell.name,lefMacroStor[j].name_)==0)
+        {
+          theCell.size_x=this->lefMacroStor[j].sizeX_;
+          theCell.size_y=this->lefMacroStor[j].sizeY_;
+          break;
+        }
+      }
+
+
+      theCell.connected_net=this->defComponentStor[i].netsAllocated_;
+
+      this->cell_list.push_back(theCell);
+
+    }
+  }
+
+
+  void addNetList()
+  {
+
+    NET theNet;
+    int netnum;
+
+    for(int i=0;i<this->(defComponentStor.size())/2;i++)
+    {
+      this->net_list.push_back(theNet);
+
+    }
+
+    for(int i=0;i<this->defComponentStor.size();i++)
+    {
+      netnum=this->defComponentStor[i].
+
+    }
+
+  }
 };
 
 }
-
 
 #endif //EPLACEPRACTICE_SRC_DATASTRUCTURE_PARSER_CIRCUIT_H_

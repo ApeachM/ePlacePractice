@@ -7968,9 +7968,9 @@ void ePlace::Parser::DumpDefComponentPinToNet() {
 ///////////////////////// Parsering Function ///////////////////////////
 ////////////////////////////////////////////////////////////////////////
 
-int ePlace::Parser::ParseLef(vector<string> &lefStor, bool isVerbose) {
+int ePlace::Parser::ParseLef(vector<string> &lefStor) {
   //    char* outFile;
-
+  bool isVerbose;
   FILE* f;
   int res;
   //    int noCalls = 0;
@@ -8236,7 +8236,8 @@ int ePlace::Parser::ParseLef(vector<string> &lefStor, bool isVerbose) {
 
   return res;
 }
-int ePlace::Parser::ParseDef(string filename, bool isVerbose) {
+int ePlace::Parser::ParseDef(string filename) {
+  bool isVerbose;
   //    int num = 99;
   char* inFile[6];
   FILE* f;

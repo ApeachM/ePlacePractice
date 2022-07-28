@@ -599,7 +599,7 @@ public:
   // Debug print
   void print(FILE* f) const;
 
-protected:
+public:
   int nameSize_;
   char* name_;
   char macroClass_[32];

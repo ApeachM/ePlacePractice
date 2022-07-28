@@ -191,8 +191,8 @@ class Parser {
 
  public:
   // Parsing Function
-  int ParseLef(vector< string >& lefStor, bool isVerbose);
-  int ParseDef(string filename, bool isVerbose);
+  int ParseLef(vector< string >& lefStor);
+  int ParseDef(string filename);
 
 
 };
