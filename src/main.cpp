@@ -14,6 +14,7 @@ int main() {
 
   circuit.parsing(lefName, defName);
   circuit.addCellList();
+  circuit.addNetList();
   cout <<"test" << endl;
 
   //open file
