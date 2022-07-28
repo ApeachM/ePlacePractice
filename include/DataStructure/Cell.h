@@ -8,12 +8,12 @@ class Cell {
  public:
   int x, y;
   float size_x, size_y;
-  char* name;
+  char *name;
   int connected_net;
 
 };
 
-class NET{
+class NET {
  public:
   int connected_cell1;
   int connected_cell2;
