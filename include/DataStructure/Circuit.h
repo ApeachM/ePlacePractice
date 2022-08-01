@@ -103,7 +103,7 @@ class Circuit : public Parser {
     int netNumber = this->defNetStor.size();
     string netName, theCellName;
     Cell* theCell = nullptr;
-    for (int i = 0; i < 5; ++i) {
+    for (int i = 0; i < netNumber; ++i) {
       NET theNet;  // constructor should be called every for loop
       theNet.name = this->defNetStor[i].name();  // name_ variable return
       for (int j = 0; j < this->defNetStor[i].numConnections(); ++j) {
