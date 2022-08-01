@@ -10,6 +10,7 @@ class Cell {
   float size_x, size_y;
   string libName;
   string instName;
+  int instNum;
   int connected_net;
 
 };

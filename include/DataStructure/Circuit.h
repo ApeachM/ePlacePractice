@@ -42,6 +42,7 @@
 namespace ePlace {
 class Circuit : public Parser {
  public:
+
   vector<Cell> cell_list;
   vector<NET> net_list;
 
@@ -62,21 +63,37 @@ class Circuit : public Parser {
     //cout<<defComponentStor.size()<<endl;
     //cout<<lefMacroStor.size()<<endl;
 //    cout<<this->defComponentStor[0]. <<endl;
+    string name;
+    int num;
 
     //<LefDefParser::defiComponent>::iterator iter;
     this->cell_list.reserve(this->defComponentStor.size());
     for (int i = 0; i < this->defComponentStor.size(); i++) {
 
+
       Cell theCell;
       theCell.x = 0;
       theCell.y = 0;
+
       theCell.connected_net = 0;
 
       theCell.x = this->defComponentStor[i].x_;
       theCell.y = this->defComponentStor[i].y_;
       theCell.libName = this->defComponentStor[i].name_;  // library(Macro) name of the cell (ex. "NOR4X4")
       theCell.instName = this->defComponentStor[i].id_;  // instance name (ex. "inst8879")
+      name=theCell.instName;
+
+      num=0;
+
+      for(int n=0;n<name.size();n++)
+      {
+        if(name[n]>47&&name[n]<58)
+        {
+          num=num*10+name[n]-48;
+        }
+      }
       //macroname=theCell.name;
+      theCell.instNum=num;
 
       //component 종류 파악, size 대입
 
@@ -180,40 +197,3 @@ class Circuit : public Parser {
 }
 
 #endif //EPLACEPRACTICE_SRC_DATASTRUCTURE_PARSER_CIRCUIT_H_
-/* for(int i=0;i<this->cell_list.size();i++)
-     {
-       //모든 net에 대해 max와 min 값 구한
-       max_x=this->cell_list[net_list[i].connectedCells[0]].x;
-       max_y=this->cell_list[net_list[i].connectedCells[0]].y;
-       min_x=this->cell_list[net_list[i].connectedCells[0]].x;
-       min_y=this->cell_list[net_list[i].connectedCells[0]].y;
-
-       for(int j=0;j<this->net_list[i].connectedCells.size();j++)
-       {
-         cell_for_look=this->net_list[i].connectedCells[j];
-         x_point=this->cell_list[cell_for_look].x;
-         y_point=this->cell_list[cell_for_look].y;
-
-         //update max and min
-         if(max_x<x_point)
-         {
-           max_x=x_point;
-         }
-         if(min_x>x_point)
-         {
-           min_x=x_point;
-         }
-         if(max_y<y_point)
-         {
-           max_y=y_point;
-         }
-         if(min_y>y_point)
-         {
-           min_y=y_point;
-         }
-
-         delta_hpwl=(max_x-min_x)+(max_y-min_y);
-         hpwl=hpwl+delta_hpwl;
-       }
-     }
-     return hpwl;*/
