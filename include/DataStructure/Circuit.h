@@ -157,6 +157,7 @@ class Circuit : public Parser {
           min_y=y_point;
         }
 
+        //calculate hpwl_edge&add to hpwl
         hpwl_edge=(max_x-min_x)+(max_y-min_y);
         hpwl=hpwl+hpwl_edge;
 
