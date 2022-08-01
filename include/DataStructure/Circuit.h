@@ -118,56 +118,57 @@ class Circuit : public Parser {
     }
   }
 
+  float getHPWL()
+  {
+    float hpwl=0;
+    float delta_hpwl=0;
+    float x_point, y_point;
+    float max_x,min_x,max_y,min_y;
 
-    float getHPWL(){
-      float hpwl=0;
-      float delta_hpwl=0;
-      float x_point, y_point;
-      float max_x,min_x,max_y,min_y;
 
+    //모든 net에 대해 delta_hpwl 계산
+    for(int i=0;i<this->net_list.size();i++)
+    {
+      //initialize
+      min_x=this->net_list[i].connectedCells[0]->x;
+      max_x=this->net_list[i].connectedCells[0]->x;
+      min_y=this->net_list[i].connectedCells[0]->y;
+      max_y=this->net_list[i].connectedCells[0]->y;
 
-      //모든 net에 대해 delta_hpwl 계산
-      for(int i=0;i<this->net_list.size();i++)
+      for(int j=0;j<this->net_list[i].connectedCells.size();j++)
       {
-        //initialize
-        min_x=this->net_list[i].connectedCells[0]->x;
-        max_x=this->net_list[i].connectedCells[0]->x;
-        min_y=this->net_list[i].connectedCells[0]->y;
-        max_y=this->net_list[i].connectedCells[0]->y;
+        x_point=this->net_list[i].connectedCells[j]->x;
+        y_point=this->net_list[i].connectedCells[j]->y;
 
-        for(int j=0;j<this->net_list[i].connectedCells.size();j++)
+        if(max_x<x_point)
         {
-          x_point=this->net_list[i].connectedCells[j]->x;
-          y_point=this->net_list[i].connectedCells[j]->y;
-
-          if(max_x<x_point)
-          {
-            max_x=x_point;
-          }
-          if(min_x>x_point)
-          {
-            min_x=x_point;
-          }
-          if(max_y<y_point)
-          {
-            max_y=y_point;
-          }
-          if(min_y>y_point)
-          {
-            min_y=y_point;
-          }
-
-          delta_hpwl=(max_x-min_x)+(max_y-min_y);
-          hpwl=hpwl+delta_hpwl;
-
-
+          max_x=x_point;
         }
+        if(min_x>x_point)
+        {
+          min_x=x_point;
+        }
+        if(max_y<y_point)
+        {
+          max_y=y_point;
+        }
+        if(min_y>y_point)
+        {
+          min_y=y_point;
+        }
+
+        delta_hpwl=(max_x-min_x)+(max_y-min_y);
+        hpwl=hpwl+delta_hpwl;
+
 
       }
 
-      return hpwl;
-
     }
+
+    return hpwl;
+
+  }
+
 
 
 };
