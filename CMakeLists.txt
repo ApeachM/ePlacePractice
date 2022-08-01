@@ -10,6 +10,8 @@ set(LEFLIB_HOME ${PROJECT_SOURCE_DIR}/module/lef)
 
 set(ENV{TYPE_CALL} library)
 
+find_package(Eigen3 REQUIRED)
+
 file(GLOB_RECURSE DataStructure
         src/DataStructure/Circuit.cpp
         src/DataStructure/Parser.cpp
@@ -38,4 +40,5 @@ add_executable(ePlacePractice src/main.cpp ${DataStructure})
 
 target_link_libraries(ePlacePractice def)
 target_link_libraries(ePlacePractice lef)
+target_link_libraries(ePlacePractice Eigen3::Eigen)
 target_include_directories(ePlacePractice PUBLIC ${CMAKE_SOURCE_DIR}/include/DataStructure)
