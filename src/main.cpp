@@ -17,6 +17,7 @@ int main() {
   circuit.addNetList();
   cout <<"test" << endl;
 
+
   //open file
 /*
 

@@ -33,6 +33,7 @@
 
 #ifndef EPLACEPRACTICE_SRC_DATASTRUCTURE_PARSER_CIRCUIT_H_
 #define EPLACEPRACTICE_SRC_DATASTRUCTURE_PARSER_CIRCUIT_H_
+
 #include <unordered_map>
 #include "Parser.h"
 #include "Cell.h"
@@ -102,7 +103,7 @@ class Circuit : public Parser {
     int netNumber = this->defNetStor.size();
     string netName, theCellName;
     Cell* theCell = nullptr;
-    for (int i = 0; i < netNumber; ++i) {
+    for (int i = 0; i < 5; ++i) {
       NET theNet;  // constructor should be called every for loop
       theNet.name = this->defNetStor[i].name();  // name_ variable return
       for (int j = 0; j < this->defNetStor[i].numConnections(); ++j) {
@@ -113,28 +114,32 @@ class Circuit : public Parser {
       }
       this->net_list.push_back(theNet);
       this->netDictionary[theNet.name] = &this->net_list.back();
+
     }
+  }
 
 
     float getHPWL(){
       float hpwl=0;
       float delta_hpwl=0;
-      float x_point, y_float;
+      float x_point, y_point;
+      float max_x,min_x,max_y,min_y;
 
-      for(int i=0;i<this->cell_list.size();i++)
+
+      //모든 net에 대해 delta_hpwl 계산
+      for(int i=0;i<this->net_list.size();i++)
       {
-        max_x=this->cell_list[net_list[i].connectedCells[0]].x;
-        max_y=this->cell_list[net_list[i].connectedCells[0]].y;
-        min_x=this->cell_list[net_list[i].connectedCells[0]].x;
-        min_y=this->cell_list[net_list[i].connectedCells[0]].y;
+        //initialize
+        min_x=this->net_list[i].connectedCells[0]->x;
+        max_x=this->net_list[i].connectedCells[0]->x;
+        min_y=this->net_list[i].connectedCells[0]->y;
+        max_y=this->net_list[i].connectedCells[0]->y;
 
         for(int j=0;j<this->net_list[i].connectedCells.size();j++)
         {
-          cell_for_look=this->net_list[i].connectedCells[j];
-          x_point=this->cell_list[cell_for_look].x;
-          y_point=this->cell_list[cell_for_look].y;
+          x_point=this->net_list[i].connectedCells[j]->x;
+          y_point=this->net_list[i].connectedCells[j]->y;
 
-          //update max and min
           if(max_x<x_point)
           {
             max_x=x_point;
@@ -154,16 +159,56 @@ class Circuit : public Parser {
 
           delta_hpwl=(max_x-min_x)+(max_y-min_y);
           hpwl=hpwl+delta_hpwl;
+
+
         }
+
       }
+
       return hpwl;
+
     }
 
-  }
+
 };
-
-
 
 }
 
 #endif //EPLACEPRACTICE_SRC_DATASTRUCTURE_PARSER_CIRCUIT_H_
+/* for(int i=0;i<this->cell_list.size();i++)
+     {
+       //모든 net에 대해 max와 min 값 구한
+       max_x=this->cell_list[net_list[i].connectedCells[0]].x;
+       max_y=this->cell_list[net_list[i].connectedCells[0]].y;
+       min_x=this->cell_list[net_list[i].connectedCells[0]].x;
+       min_y=this->cell_list[net_list[i].connectedCells[0]].y;
+
+       for(int j=0;j<this->net_list[i].connectedCells.size();j++)
+       {
+         cell_for_look=this->net_list[i].connectedCells[j];
+         x_point=this->cell_list[cell_for_look].x;
+         y_point=this->cell_list[cell_for_look].y;
+
+         //update max and min
+         if(max_x<x_point)
+         {
+           max_x=x_point;
+         }
+         if(min_x>x_point)
+         {
+           min_x=x_point;
+         }
+         if(max_y<y_point)
+         {
+           max_y=y_point;
+         }
+         if(min_y>y_point)
+         {
+           min_y=y_point;
+         }
+
+         delta_hpwl=(max_x-min_x)+(max_y-min_y);
+         hpwl=hpwl+delta_hpwl;
+       }
+     }
+     return hpwl;*/
