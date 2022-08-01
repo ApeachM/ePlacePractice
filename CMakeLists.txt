@@ -18,7 +18,7 @@ file(GLOB_RECURSE SRC
         src/DataStructure/Parser.cpp
         src/DataStructure/Cell.cpp
 
-#        src/Algorithms/FFT.cpp
+        src/Algorithms/FFT.cpp
         src/Algorithms/FFT_calculator.cpp
         )
 
