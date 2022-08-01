@@ -12,7 +12,8 @@ set(ENV{TYPE_CALL} library)
 
 find_package(Eigen3 REQUIRED)
 
-file(GLOB_RECURSE DataStructure
+file(GLOB_RECURSE SRC
+        src/DataStructure/Bin.cpp
         src/DataStructure/Circuit.cpp
         src/DataStructure/Parser.cpp
         src/DataStructure/Cell.cpp)
@@ -36,7 +37,7 @@ include_directories(
 )
 
 
-add_executable(ePlacePractice src/main.cpp ${DataStructure})
+add_executable(ePlacePractice src/main.cpp ${SRC})
 
 target_link_libraries(ePlacePractice def)
 target_link_libraries(ePlacePractice lef)
