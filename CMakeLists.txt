@@ -16,7 +16,11 @@ file(GLOB_RECURSE SRC
         src/DataStructure/Bin.cpp
         src/DataStructure/Circuit.cpp
         src/DataStructure/Parser.cpp
-        src/DataStructure/Cell.cpp)
+        src/DataStructure/Cell.cpp
+
+#        src/Algorithms/FFT.cpp
+        src/Algorithms/FFT_calculator.cpp
+        )
 
 add_subdirectory(${DEFLIB_HOME})
 add_subdirectory(${LEFLIB_HOME})
@@ -43,3 +47,4 @@ target_link_libraries(ePlacePractice def)
 target_link_libraries(ePlacePractice lef)
 target_link_libraries(ePlacePractice Eigen3::Eigen)
 target_include_directories(ePlacePractice PUBLIC ${CMAKE_SOURCE_DIR}/include/DataStructure)
+target_include_directories(ePlacePractice PUBLIC ${CMAKE_SOURCE_DIR}/include/Algorithms)
