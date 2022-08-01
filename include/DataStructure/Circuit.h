@@ -115,21 +115,54 @@ class Circuit : public Parser {
       this->netDictionary[theNet.name] = &this->net_list.back();
     }
 
-    /*
-    for(int i=0;i<this->defComponentStor.size())/2;i++)
-    {
-      this->net_list.push_back(theNet);
 
+    float getHPWL(){
+      float hpwl=0;
+      float delta_hpwl=0;
+      float x_point, y_float;
+
+      for(int i=0;i<this->cell_list.size();i++)
+      {
+        max_x=this->cell_list[net_list[i].connectedCells[0]].x;
+        max_y=this->cell_list[net_list[i].connectedCells[0]].y;
+        min_x=this->cell_list[net_list[i].connectedCells[0]].x;
+        min_y=this->cell_list[net_list[i].connectedCells[0]].y;
+
+        for(int j=0;j<this->net_list[i].connectedCells.size();j++)
+        {
+          cell_for_look=this->net_list[i].connectedCells[j];
+          x_point=this->cell_list[cell_for_look].x;
+          y_point=this->cell_list[cell_for_look].y;
+
+          //update max and min
+          if(max_x<x_point)
+          {
+            max_x=x_point;
+          }
+          if(min_x>x_point)
+          {
+            min_x=x_point;
+          }
+          if(max_y<y_point)
+          {
+            max_y=y_point;
+          }
+          if(min_y>y_point)
+          {
+            min_y=y_point;
+          }
+
+          delta_hpwl=(max_x-min_x)+(max_y-min_y);
+          hpwl=hpwl+delta_hpwl;
+        }
+      }
+      return hpwl;
     }
-
-    for(int i=0;i<this->defComponentStor.size();i++)
-    {
-      netnum=this->defComponentStor[i].
-
-    }*/
 
   }
 };
+
+
 
 }
 
