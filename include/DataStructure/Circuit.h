@@ -121,7 +121,7 @@ class Circuit : public Parser {
   float getHPWL()
   {
     float hpwl=0;
-    float delta_hpwl=0;
+    float hpwl_edge=0;
     float x_point, y_point;
     float max_x,min_x,max_y,min_y;
 
@@ -157,8 +157,8 @@ class Circuit : public Parser {
           min_y=y_point;
         }
 
-        delta_hpwl=(max_x-min_x)+(max_y-min_y);
-        hpwl=hpwl+delta_hpwl;
+        hpwl_edge=(max_x-min_x)+(max_y-min_y);
+        hpwl=hpwl+hpwl_edge;
 
 
       }
