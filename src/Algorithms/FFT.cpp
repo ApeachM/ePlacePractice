@@ -5,7 +5,10 @@ using namespace std;
 void ePlace::FFT::init(int binCnt_x = 8, int binCnt_y = 8) {
   this->binCnt_x = binCnt_x;
   this->binCnt_y = binCnt_y;
+  this->binSize_x = static_cast<float>(dieSize_x) / static_cast<float>(binCnt_x);
+  this->binSize_y = static_cast<float>(dieSize_y) / static_cast<float>(binCnt_y);
 
+  // make the bin instances
   this->bins.reserve(this->binCnt_x);
   for (int i = 0; i < this->binCnt_x; ++i) {
     vector<Bin> tmp_bins;
@@ -18,17 +21,25 @@ void ePlace::FFT::init(int binCnt_x = 8, int binCnt_y = 8) {
   }
 
   // initialize variables in bins
+  pair<float, float> curser = make_pair(0, 0);
   for (int i = 0; i < this->binCnt_x; ++i) {
     for (int j = 0; j < this->binCnt_y; ++j) {
       Bin *bin = &(this->bins.at(i).at(j));
+      bin->size_x = this->binSize_x;
+      bin->size_y = this->binSize_y;
+      bin->binPlace(curser);
+      curser.second += this->binSize_y;
+
       bin->electricDensity = 0;
       bin->electricPotential = 0;
       bin->electricForce_x = 0;
       bin->electricForce_y = 0;
     }
+    curser.second = 0;
+    curser.first += this->binSize_x;
   }
 
-  // set wx, wx_sq, wy, wy_sq values
+  // set wx, wx_sq, wy, wy_sq values in fft instances
   // see the explanation above eq (21) in the paper
   this->wx.resize(binCnt_x, 0);
   this->wx_sq.resize(binCnt_x, 0);

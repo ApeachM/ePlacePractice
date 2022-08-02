@@ -15,9 +15,7 @@ class FFT: private FFT_calculator{
   // Total default bin number: 256
   int binCnt_x;  // horizontally bin number. default: 16
   int binCnt_y;  // vertically bin number. default: 16
-  int binSize_x, binSize_y;  // the bean size. default: (Total die width or height) / 16
-
-  vector<vector<Bin>> bins;
+  float binSize_x, binSize_y;  // the bean size. default: (Total die width or height) / 16
 
   vector<float> wx, wy; // means w_u, w_v each in eq (22)
   vector<float> wx_sq, wy_sq; // means w_u^2, w_v^2 each in eq (23)
@@ -25,7 +23,8 @@ class FFT: private FFT_calculator{
   vector<float> cosTable;
 
  public:
-  void init(int binCnt_x, int binCnt_y);
+  vector<vector<Bin>> bins;
+  void init(int dieSize_x, int dieSize_y, int binCnt_x, int binCnt_y);
   void doFFT();
   void updateDensity(int x, int y, float density);
   pair<float, float> getElectricForce(int x, int y);
