@@ -32,3 +32,46 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 #include "Circuit.h"
+namespace ePlace {
+void Circuit::fftInitialization() {
+  fft.init(this->dieSize_x, this->dieSize_y, 64, 64);
+
+  // set this->bins variable
+  this->bins.reserve(fft.getBinCnt_x());
+  for (int i = 0; i < fft.getBinCnt_x(); ++i) {
+    vector<Bin *> bins_col;
+    bins_col.reserve(fft.getBinCnt_y());
+    for (int j = 0; j < fft.getBinCnt_y(); ++j) {
+      bins_col.push_back(&fft.bins.at(i).at(j));
+    }
+    this->bins.push_back(bins_col);
+  }
+}
+void Circuit::updateDensityInBin() {
+  // this part will be runtime hotspot
+
+  float fillerArea = 0, stdArea = 0;
+  for (auto &cell : this->cell_list) {
+    if (!cell.isFiller) {  // standard cell case
+      for (auto &bins_col : this->bins) {
+        for (auto theBin : bins_col) {
+          theBin->stdArea += theBin->getOverlapWithCell(cell);
+        }
+      }
+    } else if (cell.isFiller) {  // filler case
+      for (auto &bins_col : this->bins) {
+        for (auto theBin : bins_col) {
+          theBin->fillerArea += theBin->getOverlapWithCell(cell);
+        }
+      }
+    }
+  }
+
+  for (auto &bins_col : this->bins) {
+    for (auto theBin : bins_col) {
+      theBin->electricDensity = theBin->fillerArea + theBin->stdArea;
+    }
+  }
+}
+}
+
