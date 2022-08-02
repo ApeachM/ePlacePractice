@@ -38,15 +38,20 @@
 #include <Eigen/Core>
 #include "Parser.h"
 #include "Cell.h"
+#include "FFT.h"
 
 namespace ePlace {
 class Circuit : public Parser {
  public:
+  int dieSize_x = 0, dieSize_y = 0;
   vector<Cell> cell_list;
   vector<NET> net_list;
 
-  unordered_map<string, Cell*> cellDictionary;  // this data type is similar with dictionary in python
-  unordered_map<string, NET*> netDictionary;
+  unordered_map<string, Cell *> cellDictionary;  // this data type is similar with dictionary in python
+  unordered_map<string, NET *> netDictionary;
+
+  FFT fft;
+  vector<vector<Bin *>> bins;
 
   void parsing(string lefName, string defName) {
     // parse lef
@@ -56,6 +61,13 @@ class Circuit : public Parser {
 
     // parse def
     this->ParseDef(defName);
+
+    // set the die size
+    this->dieSize_x = this->defDieArea.xh();
+    this->dieSize_y = this->defDieArea.yh();
+
+    // this->addCellList()
+    // this->addNetList()
   }
 
   void addCellList() {

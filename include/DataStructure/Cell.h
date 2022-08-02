@@ -12,6 +12,7 @@ class Cell {
   string instName;
   int connected_net;
 
+  bool isFiller = false;
 };
 
 class NET {
