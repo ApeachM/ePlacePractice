@@ -2,7 +2,10 @@
 #define PI 3.141592653589793238462L
 
 using namespace std;
-void ePlace::FFT::init(int binCnt_x = 8, int binCnt_y = 8) {
+namespace ePlace {
+void FFT::init(int dieSize_x, int dieSize_y, int binCnt_x = 8, int binCnt_y = 8) {
+
+  // set the bin numbers and the bin size
   this->binCnt_x = binCnt_x;
   this->binCnt_y = binCnt_y;
   this->binSize_x = static_cast<float>(dieSize_x) / static_cast<float>(binCnt_x);
@@ -60,19 +63,19 @@ void ePlace::FFT::init(int binCnt_x = 8, int binCnt_y = 8) {
   this->cosTable.resize(max(this->binCnt_x, this->binCnt_y) * 3 / 2, 0); // ?
 
 }
-void ePlace::FFT::doFFT() {
+void FFT::doFFT() {
 
 }
 
-float ePlace::FFT::getPotential(int x, int y) {
+float FFT::getPotential(int x, int y) {
   return this->bins.at(x).at(y).electricPotential;
 }
 
-void ePlace::FFT::updateDensity(int x, int y, float density) {
+void FFT::updateDensity(int x, int y, float density) {
   this->bins.at(x).at(y).electricDensity = density;
 }
 
-pair<float, float> ePlace::FFT::getElectricForce(int x, int y) {
+pair<float, float> FFT::getElectricForce(int x, int y) {
   return make_pair(
       this->bins.at(x).at(y).electricForce_x,
       this->bins.at(x).at(y).electricForce_y);
