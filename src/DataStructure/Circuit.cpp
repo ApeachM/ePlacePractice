@@ -73,5 +73,123 @@ void Circuit::updateDensityInBin() {
     }
   }
 }
+void Circuit::parsing(string lefName, string defName) {
+  // parse lef
+  vector<string> lefStor;
+  lefStor.push_back(lefName);
+  this->ParseLef(lefStor);
+
+  // parse def
+  this->ParseDef(defName);
+
+  // set the die size
+  this->dieSize_x = this->defDieArea.xh();
+  this->dieSize_y = this->defDieArea.yh();
+
+  // this->addCellList()
+  // this->addNetList()
+}
+void Circuit::addCellList() {
+  //cout<<defComponentStor.size()<<endl;
+  //cout<<lefMacroStor.size()<<endl;
+//    cout<<this->defComponentStor[0]. <<endl;
+
+  //<LefDefParser::defiComponent>::iterator iter;
+  this->cell_list.reserve(this->defComponentStor.size());
+  for (int i = 0; i < this->defComponentStor.size(); i++) {
+
+    Cell theCell;
+    theCell.x = 0;
+    theCell.y = 0;
+    theCell.connected_net = 0;
+
+    theCell.x = this->defComponentStor[i].x_;
+    theCell.y = this->defComponentStor[i].y_;
+    theCell.libName = this->defComponentStor[i].name_;  // library(Macro) name of the cell (ex. "NOR4X4")
+    theCell.instName = this->defComponentStor[i].id_;  // instance name (ex. "inst8879")
+    //macroname=theCell.name;
+
+    //component 종류 파악, size 대입
+
+
+    for (int j = 0; j < this->lefMacroStor.size(); j++) {
+      //cout<<lefMacroStor[i].name_<<endl;
+      string libName = lefMacroStor[j].name_;
+      if (theCell.libName == libName) {
+        theCell.size_x = this->lefMacroStor[j].sizeX_;
+        theCell.size_y = this->lefMacroStor[j].sizeY_;
+        break;
+      }
+    }
+
+    theCell.connected_net = this->defComponentStor[i].netsAllocated_;
+
+    this->cell_list.push_back(theCell);
+    this->cellDictionary[theCell.instName] = &this->cell_list.back();
+
+  }
+}
+void Circuit::addNetList() {
+
+  int netNumber = this->defNetStor.size();
+  string netName, theCellName;
+  Cell *theCell = nullptr;
+  for (int i = 0; i < netNumber; ++i) {
+    NET theNet;  // constructor should be called every for loop
+    theNet.name = this->defNetStor[i].name();  // name_ variable return
+    for (int j = 0; j < this->defNetStor[i].numConnections(); ++j) {
+      theCellName = this->defNetStor[i].instance(j);
+//        theCell = this->cellDictionary.at(theCellName);
+      theCell = this->cellDictionary[theCellName];
+      theNet.connectedCells.push_back(theCell);
+    }
+    this->net_list.push_back(theNet);
+    this->netDictionary[theNet.name] = &this->net_list.back();
+
+  }
+}
+float Circuit::getHPWL() {
+  float hpwl = 0;
+  float hpwl_edge = 0;
+  float x_point, y_point;
+  float max_x, min_x, max_y, min_y;
+
+
+  //모든 net에 대해 delta_hpwl 계산
+  for (int i = 0; i < this->net_list.size(); i++) {
+    //initialize
+    min_x = this->net_list[i].connectedCells[0]->x;
+    max_x = this->net_list[i].connectedCells[0]->x;
+    min_y = this->net_list[i].connectedCells[0]->y;
+    max_y = this->net_list[i].connectedCells[0]->y;
+
+    for (int j = 0; j < this->net_list[i].connectedCells.size(); j++) {
+      x_point = this->net_list[i].connectedCells[j]->x;
+      y_point = this->net_list[i].connectedCells[j]->y;
+
+      if (max_x < x_point) {
+        max_x = x_point;
+      }
+      if (min_x > x_point) {
+        min_x = x_point;
+      }
+      if (max_y < y_point) {
+        max_y = y_point;
+      }
+      if (min_y > y_point) {
+        min_y = y_point;
+      }
+
+      //calculate hpwl_edge&add to hpwl
+      hpwl_edge = (max_x - min_x) + (max_y - min_y);
+      hpwl = hpwl + hpwl_edge;
+
+    }
+
+  }
+
+  return hpwl;
+
+}
 }
 

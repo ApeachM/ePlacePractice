@@ -13,8 +13,7 @@ int main() {
   string defName = "../bench/ispd18/ispd18_test1/ispd18_test1.input.def";
 
   circuit.parsing(lefName, defName);
-  circuit.addCellList();
-  circuit.addNetList();
+  circuit.fftInitialization();
   cout <<"test" << endl;
 
 
