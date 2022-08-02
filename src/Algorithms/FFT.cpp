@@ -80,4 +80,12 @@ pair<float, float> FFT::getElectricForce(int x, int y) {
       this->bins.at(x).at(y).electricForce_x,
       this->bins.at(x).at(y).electricForce_y);
 }
+int FFT::getBinCnt_x() const {
+  return this->binCnt_x;
+}
+int FFT::getBinCnt_y() const {
+  return this->binCnt_y;
+}
+}
+
 

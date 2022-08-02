@@ -27,9 +27,12 @@ class FFT: private FFT_calculator{
   void init(int dieSize_x, int dieSize_y, int binCnt_x, int binCnt_y);
   void doFFT();
   void updateDensity(int x, int y, float density);
+
+  // getters
   pair<float, float> getElectricForce(int x, int y);
   float getPotential(int x, int y);
-
+  int getBinCnt_x() const;
+  int getBinCnt_y() const;
 };
 
 }
