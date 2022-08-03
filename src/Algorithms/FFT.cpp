@@ -117,11 +117,11 @@ void FFT::doFFT() {
   }
 
   // TODO: Fill this blank referring the upper link @Jiwoo
-  for(int i = 0; i < this->binCnt_x; i++) {
+  for (int i = 0; i < this->binCnt_x; i++) {
     float wx = this->wx[i];
     float wx2 = this->wx_sq[i];
 
-    for(int j = 0; j < this->binCnt_y; j++) {
+    for (int j = 0; j < this->binCnt_y; j++) {
       float wy = this->wy[j];
       float wy2 = this->wy_sq[j];
 
@@ -129,10 +129,9 @@ void FFT::doFFT() {
       float phi = 0;
       float electroX = 0, electroY = 0;
 
-      if(i == 0 && j == 0) {
+      if (i == 0 && j == 0) {
         phi = electroX = electroY = 0.0f;
-      }
-      else {
+      } else {
         //////////// lutong
         //  denom =
         //  wx2 / 4.0 +
@@ -154,47 +153,48 @@ void FFT::doFFT() {
     }
 
 
-  // get equation (23) using external library
-  ddct2d(this->binCnt_x,
-         this->binCnt_y,
-         1,
-         electricPotential,
-         NULL,
-         (int *) &this->workArea_[0],
-         (float *) &this->cosTable[0]);
-  // get equation (24) using external library
-  ddsct2d(this->binCnt_x,
-         this->binCnt_y,
-         1,
-         electricForceX,
-         NULL,
-         (int *) &this->workArea_[0],
-         (float *) &this->cosTable[0]);
-  ddcst2d(this->binCnt_x,
-          this->binCnt_y,
-          1,
-          electricForceY,
-          NULL,
-          (int *) &this->workArea_[0],
-          (float *) &this->cosTable[0]);
+    // get equation (23) using external library
+    ddct2d(this->binCnt_x,
+           this->binCnt_y,
+           1,
+           electricPotential,
+           NULL,
+           (int *) &this->workArea_[0],
+           (float *) &this->cosTable[0]);
+    // get equation (24) using external library
+    ddsct2d(this->binCnt_x,
+            this->binCnt_y,
+            1,
+            electricForceX,
+            NULL,
+            (int *) &this->workArea_[0],
+            (float *) &this->cosTable[0]);
+    ddcst2d(this->binCnt_x,
+            this->binCnt_y,
+            1,
+            electricForceY,
+            NULL,
+            (int *) &this->workArea_[0],
+            (float *) &this->cosTable[0]);
 
-  // 2d array to vector(class variables)
-  for (int i = 0; i < this->binCnt_x; i++) {
-    for (int j = 0; j < this->binCnt_y; j++) {
-      this->bins[i][j].electricDensity = binDensity[i][j];
-      this->bins[i][j].electricPotential = electricPotential[i][j];
-      this->bins[i][j].electricForce_x = electricForceX[i][j];
-      this->bins[i][j].electricForce_y = electricForceY[i][j];
+    // 2d array to vector(class variables)
+    for (int i = 0; i < this->binCnt_x; i++) {
+      for (int j = 0; j < this->binCnt_y; j++) {
+        this->bins[i][j].electricDensity = binDensity[i][j];
+        this->bins[i][j].electricPotential = electricPotential[i][j];
+        this->bins[i][j].electricForce_x = electricForceX[i][j];
+        this->bins[i][j].electricForce_y = electricForceY[i][j];
+      }
+      delete binDensity[i];
+      delete electricPotential[i];
+      delete electricForceX[i];
+      delete electricForceY[i];
     }
-    delete binDensity[i];
-    delete electricPotential[i];
-    delete electricForceX[i];
-    delete electricForceY[i];
+    delete binDensity;
+    delete electricPotential;
+    delete electricForceX;
+    delete electricForceY;
   }
-  delete binDensity;
-  delete electricPotential;
-  delete electricForceX;
-  delete electricForceY;
 }
 
 float FFT::getPotential(int x, int y) {

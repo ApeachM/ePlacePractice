@@ -32,6 +32,8 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 #include "Circuit.h"
+#include <iostream>
+
 namespace ePlace {
 void Circuit::fftInitialization() {
   fft.init(this->dieSize_x, this->dieSize_y, 64, 64);
@@ -218,9 +220,45 @@ void Circuit::cellClassificationIntoBin() {
     this->bins[binIdx_x][binIdx_y]->correspondCells.push_back(&cell);
   }
 }
-void Circuit::doIteration() {
+void Circuit::doIteration()
+{
+  //모든 bin에 접근
 
+  for(int i=0;i<this->bins.size();i++)
+  {
+    for(int j=0;j<this->bins[i].size();j++)
+    {
+      //bin 안의 cell에 접근
+      for(int k=0;k<this->bins[i][j]->correspondCells.size();k++)
+      {
+        int cell_num;
 
+        //이 cell의 instName 통해 cell_list 내의 순서 찾기
+        for(int l=0;l<this->cell_list.size();l++)
+        {
+          if(this->cell_list[l].instName==this->bins[i][j]->correspondCells[k]->instName)
+          {
+            cell_num=l; //cell_list 내의 순서
+            break;
+          }
+        }
+        //mass
+        //this->cell_list[cell_num].mass=1;
+
+        //force=bin electricDensity*cell area
+        float e_Density=this->bins[i][j]->electricDensity;
+        float cell_area=(this->bins[i][j]->correspondCells[k]->size_x)*(this->bins[i][j]->correspondCells[k]->size_y);
+        float force=e_Density*cell_area;
+        this->cell_list[cell_num].force=force;
+
+        //velocity
+        float time_step=0.01;
+        float acceleration=force/1;
+        this->cell_list[cell_num].velocity=this->cell_list[cell_num].velocity+acceleration*time_step;
+      }
+
+    }
+  }
 
 }
 }
