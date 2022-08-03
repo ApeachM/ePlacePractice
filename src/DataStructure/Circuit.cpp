@@ -249,6 +249,10 @@ void Circuit::doIteration() {
     }
   }
 
+  // TODO: you should determine the cell coordinate by using velocity of cell
+
+  // cell-bin linking update
+  this->cellClassificationIntoBin();
 }
 }
 
