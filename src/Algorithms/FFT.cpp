@@ -117,10 +117,41 @@ void FFT::doFFT() {
   }
 
   // TODO: Fill this blank referring the upper link @Jiwoo
-  //
-  //
-  //
-  //
+  for(int i = 0; i < this->binCnt_x; i++) {
+    float wx = this->wx[i];
+    float wx2 = this->wx_sq[i];
+
+    for(int j = 0; j < this->binCnt_y; j++) {
+      float wy = this->wy[j];
+      float wy2 = this->wy_sq[j];
+
+      float density = binDensity[i][j];
+      float phi = 0;
+      float electroX = 0, electroY = 0;
+
+      if(i == 0 && j == 0) {
+        phi = electroX = electroY = 0.0f;
+      }
+      else {
+        //////////// lutong
+        //  denom =
+        //  wx2 / 4.0 +
+        //  wy2 / 4.0 ;
+        // a_phi = a_den / denom ;
+        ////b_phi = 0 ; // -1.0 * b / denom ;
+        ////a_ex = 0 ; // b_phi * wx ;
+        // a_ex = a_phi * wx / 2.0 ;
+        ////a_ey = 0 ; // b_phi * wy ;
+        // a_ey = a_phi * wy / 2.0 ;
+        ///////////
+        phi = density / (wx2 + wy2);
+        electroX = phi * wx;
+        electroY = phi * wy;
+      }
+      electricPotential[i][j] = phi;
+      electricForceX[i][j] = electroX;
+      electricForceY[i][j] = electroY;
+    }
 
 
   // get equation (23) using external library
