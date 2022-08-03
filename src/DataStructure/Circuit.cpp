@@ -86,8 +86,6 @@ void Circuit::parsing(string lefName, string defName) {
   this->dieSize_x = this->defDieArea.xh();
   this->dieSize_y = this->defDieArea.yh();
 
-  // this->addCellList()
-  // this->addNetList()
 }
 void Circuit::addCellList() {
   //cout<<defComponentStor.size()<<endl;
@@ -192,7 +190,33 @@ float Circuit::getHPWL() {
 
 }
 void Circuit::initialization() {
+  this->addCellList();
+  this->addNetList();
   this->fftInitialization();
+  // this->initialPlacement();
+  // this->addFillers()
+  this->cellClassificationIntoBin();
+  
+}
+void Circuit::cellClassificationIntoBin() {
+  int binIdx_x, binIdx_y;
+  float cellCoordinate_x, cellCoordinate_y;
+  float binSize_x = this->bins[0][0]->size_x;
+  float binSize_y = this->bins[0][0]->size_y;
+
+  // clear the cell pointer bowl in bin
+  for (int i = 0; i < this->bins.size(); ++i) {
+    for (int j = 0; j < this->bins[0].size(); ++j) {
+      this->bins[i][j]->correspondCells.clear();
+    }
+  }
+  for (auto & cell : this->cell_list) {
+    cellCoordinate_x = static_cast<float>(cell.x);
+    cellCoordinate_y = static_cast<float>(cell.y);
+    binIdx_x = floor(cellCoordinate_x / binSize_x);
+    binIdx_y = floor(cellCoordinate_y / binSize_y);
+    this->bins[binIdx_x][binIdx_y]->correspondCells.push_back(&cell);
+  }
 }
 }
 

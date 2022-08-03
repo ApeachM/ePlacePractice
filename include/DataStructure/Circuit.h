@@ -68,6 +68,7 @@ class Circuit : public Parser {
   void fftInitialization();
 
   void updateDensityInBin();
+  void cellClassificationIntoBin();
 };
 
 }

@@ -2,7 +2,7 @@
 #define EPLACEPRACTICE_INCLUDE_DATASTRUCTURE_BIN_H_
 #include "Cell.h"
 
-namespace ePlace{
+namespace ePlace {
 class Bin {
  public:
   float size_x, size_y;
@@ -15,8 +15,10 @@ class Bin {
 
   float stdArea = 0, fillerArea = 0;
 
+  vector<Cell *> correspondCells;
+
   void binPlace(pair<float, float> ll);
-  float getOverlapWithCell(const Cell& cell) const;
+  float getOverlapWithCell(const Cell &cell) const;
 };
 
 }
