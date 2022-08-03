@@ -227,15 +227,8 @@ void Circuit::doIteration() {
     for (int j = 0; j < this->bins[i].size(); j++) {
       //bin 안의 cell에 접근
       for (int k = 0; k < this->bins[i][j]->correspondCells.size(); k++) {
-        int cell_num;
+        Cell* theCell = this->bins[i][j]->correspondCells[k];
 
-        //이 cell의 instName 통해 cell_list 내의 순서 찾기
-        for (int l = 0; l < this->cell_list.size(); l++) {
-          if (this->cell_list[l].instName == this->bins[i][j]->correspondCells[k]->instName) {
-            cell_num = l; //cell_list 내의 순서
-            break;
-          }
-        }
         //mass
         //this->cell_list[cell_num].mass=1;
 
@@ -243,13 +236,14 @@ void Circuit::doIteration() {
         float e_Density = this->bins[i][j]->electricDensity;
         float
             cell_area = (this->bins[i][j]->correspondCells[k]->size_x) * (this->bins[i][j]->correspondCells[k]->size_y);
+        // TODO: this part is wrong. Edit here.
         float force = e_Density * cell_area;
-        this->cell_list[cell_num].force = force;
+        theCell->force = force;
 
         //velocity
         float time_step = 0.01;
         float acceleration = force / 1;
-        this->cell_list[cell_num].velocity = this->cell_list[cell_num].velocity + acceleration * time_step;
+        theCell->velocity = theCell->velocity + acceleration * time_step;
       }
 
     }
