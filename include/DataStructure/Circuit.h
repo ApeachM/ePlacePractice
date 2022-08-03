@@ -61,7 +61,7 @@ class Circuit : public Parser {
 
   float getHPWL();
 
-  void initialPlacement(){
+  void initialPlacement() {
 
   }
   void initialization();
@@ -74,6 +74,5 @@ class Circuit : public Parser {
 };
 
 }
-
 
 #endif //EPLACEPRACTICE_SRC_DATASTRUCTURE_PARSER_CIRCUIT_H_

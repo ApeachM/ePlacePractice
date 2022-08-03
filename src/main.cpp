@@ -14,7 +14,6 @@ int main() {
 
   circuit.parsing(lefName, defName);
   circuit.initialization();
-  cout <<"test" << endl;
-
+  cout << "test" << endl;
 
 }

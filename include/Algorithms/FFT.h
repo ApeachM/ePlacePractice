@@ -6,7 +6,7 @@
 namespace ePlace {
 using namespace std;
 
-class FFT: private FFT_calculator{
+class FFT : private FFT_calculator {
  private:
   // refer the paper:
   // ePlace: Electrostatics based Placement using Fast Fourier Transform and Nesterov’s Method

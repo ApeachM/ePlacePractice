@@ -1,7 +1,7 @@
 #ifndef EPLACEPRACTICE_SRC_ALGORITHMS_FFT_calculator_H_
 #define EPLACEPRACTICE_SRC_ALGORITHMS_FFT_calculator_H_
 
-namespace ePlace{
+namespace ePlace {
 class FFT_calculator {
  public:
   // The following FFT library came from
