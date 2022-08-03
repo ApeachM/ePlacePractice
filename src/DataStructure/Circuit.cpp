@@ -194,5 +194,10 @@ float Circuit::getHPWL() {
 void Circuit::initialization() {
   this->fftInitialization();
 }
+void Circuit::doIteration() {
+
+
+
+}
 }
 

@@ -68,8 +68,11 @@ class Circuit : public Parser {
   void fftInitialization();
 
   void updateDensityInBin();
+
+  void doIteration();
 };
 
 }
+
 
 #endif //EPLACEPRACTICE_SRC_DATASTRUCTURE_PARSER_CIRCUIT_H_

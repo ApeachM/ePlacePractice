@@ -12,6 +12,10 @@ class Cell {
   string instName;
   int connected_net;
 
+  float force;
+  float velocity;
+  float mass;
+
   bool isFiller = false;
 };
 
