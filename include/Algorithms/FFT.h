@@ -22,6 +22,11 @@ class FFT: private FFT_calculator{
 
   vector<float> cosTable;
 
+  // work area for bit reversal (prev: ip)
+  // length: round(sqrt( max(binCntX_, binCntY_) )) + 2
+  // Question for what it is..
+  std::vector<int> workArea_;
+
  public:
   vector<vector<Bin>> bins;
   void init(int dieSize_x, int dieSize_y, int binCnt_x, int binCnt_y);

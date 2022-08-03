@@ -191,5 +191,8 @@ float Circuit::getHPWL() {
   return hpwl;
 
 }
+void Circuit::initialization() {
+  this->fftInitialization();
+}
 }
 

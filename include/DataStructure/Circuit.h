@@ -64,7 +64,7 @@ class Circuit : public Parser {
   void initialPlacement(){
 
   }
-
+  void initialization();
   void fftInitialization();
 
   void updateDensityInBin();
