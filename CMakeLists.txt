@@ -20,6 +20,8 @@ file(GLOB_RECURSE SRC
 
         src/Algorithms/FFT.cpp
         src/Algorithms/FFT_calculator.cpp
+
+        src/Utility/Visualizer.cpp
         )
 
 add_subdirectory(${DEFLIB_HOME})
@@ -48,6 +50,7 @@ target_link_libraries(ePlacePractice lef)
 target_link_libraries(ePlacePractice Eigen3::Eigen)
 target_include_directories(ePlacePractice PUBLIC ${CMAKE_SOURCE_DIR}/include/DataStructure)
 target_include_directories(ePlacePractice PUBLIC ${CMAKE_SOURCE_DIR}/include/Algorithms)
+target_include_directories(ePlacePractice PUBLIC ${CMAKE_SOURCE_DIR}/include/Utility)
 
 
 set(YOU_NEED_CIMG 1)

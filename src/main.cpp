@@ -1,10 +1,11 @@
 #include <iostream>
-#include "Circuit.h"
 #include <fstream>
 #include <vector>
 #include <sstream>
 #include <string>
 #include "CImg.h"
+#include "Circuit.h"
+#include "Visualizer.h"
 
 using namespace std;
 using namespace ePlace;
@@ -17,19 +18,9 @@ int main() {
 
   circuit.parsing(lefName, defName);
   circuit.initialization();
+
+  Visualizer::draw(circuit);
   cout << "test" << endl;
-
-
-  int size_x = 640;
-  int size_y = 480;
-  int size_z = 1;
-  int numberOfColorChannels = 3; // R G B
-  unsigned char initialValue = 0;
-
-  CImg<unsigned char> image(size_x, size_y, size_z, numberOfColorChannels, initialValue);
-
-  image.save("../Data/outputs/images/save.bmp");
-
 
 
 }
