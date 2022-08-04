@@ -252,7 +252,35 @@ void Circuit::doIteration() {
     }
   }
 
+
+}
+
+void Circuit::moveCellCoordinate()
+{
   // TODO: you should determine the cell coordinate by using velocity of cell
+  float cellCoordinate_x, cellCoordinate_y;
+  float velocity_x,velocity_y;
+  float acceleration_x, acceleration_y;
+  float time_step=0.01;
+
+  for (int i = 0; i < this->cell_list.size(); i++)
+  {
+
+    cellCoordinate_x=this->cell_list[i].x;
+    cellCoordinate_y=this->cell_list[i].y;
+    velocity_x=this->cell_list[i].velocity_x;
+    velocity_y=this->cell_list[i].velocity_y;
+    acceleration_x=this->cell_list[i].force_x;
+    acceleration_y=this->cell_list[i].force_y;
+
+    //x+v0*t+1/2*a*t^2
+    cellCoordinate_x = cellCoordinate_x + (velocity_x*time_step) + (0.5*acceleration_x*time_step*time_step);
+    cellCoordinate_y = cellCoordinate_y + (velocity_y*time_step) + (0.5*acceleration_y*time_step*time_step);
+
+    this->cell_list[i].x=cellCoordinate_x;
+    this->cell_list[i].y=cellCoordinate_y;
+
+  }
 
 // cell-bin linking update
   this->cellClassificationIntoBin();
