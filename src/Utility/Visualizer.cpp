@@ -6,7 +6,7 @@ namespace Visualizer {
 using namespace cimg_library;
 using Image = cimg_library::CImg<unsigned char>;
 int scaleFactor = 100;
-void draw(const Circuit &circuit) {
+void draw(const Circuit &circuit, const string& filename) {
   int size_x, size_y, size_z;
   size_x = circuit.dieSize_x/scaleFactor;
   size_y = circuit.dieSize_y/scaleFactor;
@@ -18,7 +18,9 @@ void draw(const Circuit &circuit) {
   plotCells(circuit, image);
 
   // this->plotNets();
-  image.save("../Data/outputs/images/save.bmp");
+  string filePath = "../Data/outputs/images/" + filename;
+  const char *filePathArray = filePath.c_str();
+  image.save(filePathArray);
 
 }
 void plotCells(const Circuit &circuit, cimg_library::CImg<unsigned char> &image) {

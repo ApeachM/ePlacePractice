@@ -1,9 +1,7 @@
 #include <iostream>
 #include <fstream>
-#include <vector>
 #include <sstream>
 #include <string>
-#include "CImg.h"
 #include "Circuit.h"
 #include "Visualizer.h"
 
@@ -18,8 +16,10 @@ int main() {
 
   circuit.parsing(lefName, defName);
   circuit.initialization();
+  for (int i = 0; i < 30; ++i) {
+    circuit.doIteration(i);
+  }
 
-  Visualizer::draw(circuit);
   cout << "test" << endl;
 
 

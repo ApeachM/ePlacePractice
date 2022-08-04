@@ -73,7 +73,7 @@ class Circuit : public Parser {
 
   void updateDensityInBin();
 
-  void doIteration();
+  void doIteration(int iterationNum);
   void cellClassificationIntoBin();
 };
 

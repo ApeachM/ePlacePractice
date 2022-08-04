@@ -32,6 +32,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 #include "Circuit.h"
+#include "Visualizer.h"
 #include <iostream>
 #include <random>
 
@@ -273,7 +274,7 @@ void Circuit::cellClassificationIntoBin() {
     this->bins[binIdx_x][binIdx_y]->correspondCells.push_back(&cell);
   }
 }
-void Circuit::doIteration() {
+void Circuit::doIteration(int iterationNum) {
   //모든 bin에 접근
 
   for (int i = 0; i < this->bins.size(); i++) {
@@ -306,6 +307,11 @@ void Circuit::doIteration() {
 
   // cell-bin linking update
   this->cellClassificationIntoBin();
+
+  // visualizing
+  string filename = "img" + to_string(iterationNum) + ".bmp";
+  Visualizer::draw(*this, filename);
+
 }
 }
 
