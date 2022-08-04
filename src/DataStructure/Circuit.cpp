@@ -236,14 +236,17 @@ void Circuit::doIteration() {
         float e_Density = this->bins[i][j]->electricDensity;
         float
             cell_area = (this->bins[i][j]->correspondCells[k]->size_x) * (this->bins[i][j]->correspondCells[k]->size_y);
+
         // TODO: this part is wrong. Edit here.
-        float force = e_Density * cell_area;
-        theCell->force = force;
+        float force_x = (this->bins[i][j]->electricField_x)*cell_area;
+        float force_y = (this->bins[i][j]->electricField_y)*cell_area;
 
         //velocity
         float time_step = 0.01;
-        float acceleration = force / 1;
-        theCell->velocity = theCell->velocity + acceleration * time_step;
+        float acceleration_x = force_x / 1;
+        float acceleration_y = force_y / 1;
+        theCell->velocity_x = theCell->velocity_x + acceleration_x * time_step;
+        theCell->velocity_y = theCell->velocity_y + acceleration_y * time_step;
       }
 
     }
