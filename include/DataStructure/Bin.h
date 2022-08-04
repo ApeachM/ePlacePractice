@@ -10,8 +10,8 @@ class Bin {
 
   float electricDensity;  // means ρ_DCT in eq (22)
   float electricPotential;  // means phi_DCT in eq (23)
-  float electricForce_x;  // means ξ_x_DSCT in eq (24)
-  float electricForce_y;  // means ξ_y_DSCT in eq (24)
+  float electricField_x;  // means ξ_x_DSCT in eq (24)
+  float electricField_y;  // means ξ_y_DSCT in eq (24)
 
   float stdArea = 0, fillerArea = 0;
 

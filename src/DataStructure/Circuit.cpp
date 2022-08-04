@@ -103,7 +103,6 @@ void Circuit::addCellList() {
     Cell theCell;
     theCell.x = 0;
     theCell.y = 0;
-    theCell.connected_net = 0;
 
     theCell.x = this->defComponentStor[i].x_;
     theCell.y = this->defComponentStor[i].y_;
@@ -123,8 +122,6 @@ void Circuit::addCellList() {
         break;
       }
     }
-
-    theCell.connected_net = this->defComponentStor[i].netsAllocated_;
 
     this->cell_list.push_back(theCell);
 
@@ -170,7 +167,6 @@ void Circuit::addFillerCells() {
     theFiller.size_x = averageWidth;
     theFiller.size_y = averageWidth;
 
-    theFiller.connected_net = -1;
     this->cell_list.push_back(theFiller);
   }
 
@@ -193,6 +189,7 @@ void Circuit::addNetList() {
       theCellName = this->defNetStor[i].instance(j);
 //        theCell = this->cellDictionary.at(theCellName);
       theCell = this->cellDictionary[theCellName];
+      theCell->connected_nets_idx.push_back(netNumber);
       theNet.connectedCells.push_back(theCell);
     }
     this->net_list.push_back(theNet);
@@ -283,35 +280,81 @@ void Circuit::doIteration(int iterationNum) {
       for (int k = 0; k < this->bins[i][j]->correspondCells.size(); k++) {
         Cell *theCell = this->bins[i][j]->correspondCells[k];
 
-        //mass
-        //this->cell_list[cell_num].mass=1;
-
         //force=bin electricDensity*cell area
         float e_Density = this->bins[i][j]->electricDensity;
-        float
-            cell_area = (this->bins[i][j]->correspondCells[k]->size_x) * (this->bins[i][j]->correspondCells[k]->size_y);
-        // TODO: this part is wrong. Edit here.
-        float force = e_Density * cell_area;
-        theCell->force = force;
+        float cell_area = (this->bins[i][j]->correspondCells[k]->size_x) *
+            (this->bins[i][j]->correspondCells[k]->size_y);
+
+        // Apply electric force
+        float force_x = (this->bins[i][j]->electricField_x) * cell_area;
+        float force_y = (this->bins[i][j]->electricField_y) * cell_area;
+
+        // Apply Wire Length Force
+        pair<float, float> wireLengthForce = this->getWireLengthForce(*theCell);
+        force_x += wireLengthForce.first;
+        force_y += wireLengthForce.second;
+
+        // apply non-conservative force (friction) for convergence to solution
+        theCell->force_x = force_x - this->frictionCoefficient * theCell->velocity_x;
+        theCell->force_y = force_y - this->frictionCoefficient * theCell->velocity_y;
 
         //velocity
         float time_step = 0.01;
-        float acceleration = force / 1;
-        theCell->velocity = theCell->velocity + acceleration * time_step;
+        float acceleration_x = theCell->force_x / theCell->mass;
+        float acceleration_y = theCell->force_y / theCell->mass;
+        theCell->velocity_x = theCell->velocity_x + acceleration_x * time_step;
+        theCell->velocity_y = theCell->velocity_y + acceleration_y * time_step;
       }
 
     }
   }
-
-  // TODO: you should determine the cell coordinate by using velocity of cell
-
   // cell-bin linking update
   this->cellClassificationIntoBin();
 
   // visualizing
   string filename = "img" + to_string(iterationNum) + ".bmp";
   Visualizer::draw(*this, filename);
+}
 
+void Circuit::moveCellCoordinate() {
+  // TODO: you should determine the cell coordinate by using velocity of cell
+  float cellCoordinate_x, cellCoordinate_y;
+  float velocity_x, velocity_y;
+  float acceleration_x, acceleration_y;
+  float time_step = 0.01;
+
+  for (int i = 0; i < this->cell_list.size(); i++) {
+
+    cellCoordinate_x = this->cell_list[i].x;
+    cellCoordinate_y = this->cell_list[i].y;
+    velocity_x = this->cell_list[i].velocity_x;
+    velocity_y = this->cell_list[i].velocity_y;
+    acceleration_x = this->cell_list[i].force_x;
+    acceleration_y = this->cell_list[i].force_y;
+
+    //x+v0*t+1/2*a*t^2
+    cellCoordinate_x = cellCoordinate_x + (velocity_x * time_step) + (0.5 * acceleration_x * time_step * time_step);
+    cellCoordinate_y = cellCoordinate_y + (velocity_y * time_step) + (0.5 * acceleration_y * time_step * time_step);
+
+    this->cell_list[i].x = cellCoordinate_x;
+    this->cell_list[i].y = cellCoordinate_y;
+
+  }
+
+
+}
+
+pair<float, float> Circuit::getWireLengthForce(const Cell &theCell) {
+  float forceX = 0, forceY = 0;
+  for (int i : theCell.connected_nets_idx) {
+    NET theNet = this->net_list[i];
+    for (auto &connectedCell : theNet.connectedCells) {
+      Cell neighborCell = *connectedCell;
+      forceX += neighborCell.x - theCell.x;
+      forceY += neighborCell.y - theCell.y;
+    }
+  }
+  return make_pair(forceX * this->wireLengthCoefficient, forceY * this->wireLengthCoefficient);
 }
 }
 
