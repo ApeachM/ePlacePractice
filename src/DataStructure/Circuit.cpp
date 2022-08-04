@@ -32,6 +32,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 #include "Circuit.h"
+#include "Cell.h"
 #include <iostream>
 
 namespace ePlace {
@@ -101,7 +102,6 @@ void Circuit::addCellList() {
     Cell theCell;
     theCell.x = 0;
     theCell.y = 0;
-    theCell.connected_net = 0;
 
     theCell.x = this->defComponentStor[i].x_;
     theCell.y = this->defComponentStor[i].y_;
@@ -122,8 +122,6 @@ void Circuit::addCellList() {
       }
     }
 
-    theCell.connected_net = this->defComponentStor[i].netsAllocated_;
-
     this->cell_list.push_back(theCell);
     this->cellDictionary[theCell.instName] = &this->cell_list.back();
 
@@ -141,6 +139,7 @@ void Circuit::addNetList() {
       theCellName = this->defNetStor[i].instance(j);
 //        theCell = this->cellDictionary.at(theCellName);
       theCell = this->cellDictionary[theCellName];
+      theCell->connected_nets_idx.push_back(netNumber);
       theNet.connectedCells.push_back(theCell);
     }
     this->net_list.push_back(theNet);
@@ -234,9 +233,14 @@ void Circuit::doIteration() {
         float cell_area = (this->bins[i][j]->correspondCells[k]->size_x) *
             (this->bins[i][j]->correspondCells[k]->size_y);
 
+        // Apply electric force
         float force_x = (this->bins[i][j]->electricField_x) * cell_area;
         float force_y = (this->bins[i][j]->electricField_y) * cell_area;
-        // TODO: wirelength force should be applied.
+
+        // Apply Wire Length Force
+        pair<float, float> wireLengthForce = this->getWireLengthForce(*theCell);
+        force_x += wireLengthForce.first;
+        force_y += wireLengthForce.second;
 
         // apply non-conservative force (friction) for convergence to solution
         theCell->force_x = force_x - this->frictionCoefficient * theCell->velocity_x;
@@ -284,5 +288,17 @@ void Circuit::moveCellCoordinate() {
   this->cellClassificationIntoBin();
 }
 
+pair<float, float> Circuit::getWireLengthForce(const Cell &theCell) {
+  float forceX = 0, forceY = 0;
+  for (int i : theCell.connected_nets_idx) {
+    NET theNet = this->net_list[i];
+    for (auto &connectedCell : theNet.connectedCells) {
+      Cell neighborCell = *connectedCell;
+      forceX += neighborCell.x - theCell.x;
+      forceY += neighborCell.y - theCell.y;
+    }
+  }
+  return make_pair(forceX * this->wireLengthCoefficient, forceY * this->wireLengthCoefficient);
+}
 }
 

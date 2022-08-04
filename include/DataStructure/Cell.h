@@ -10,7 +10,7 @@ class Cell {
   float size_x, size_y;
   string libName;
   string instName;
-  int connected_net;
+  vector<int> connected_nets_idx;
 
   float force_x = 0;
   float force_y = 0;

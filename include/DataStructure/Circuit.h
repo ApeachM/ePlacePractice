@@ -53,6 +53,7 @@ class Circuit : public Parser {
   FFT fft;
   vector<vector<Bin *>> bins;
 
+  float wireLengthCoefficient = 1;
   float frictionCoefficient = 0.2;
 
   void parsing(string lefName, string defName);
@@ -74,6 +75,7 @@ class Circuit : public Parser {
   void doIteration();
   void moveCellCoordinate();
   void cellClassificationIntoBin();
+  pair<float, float> getWireLengthForce(const Cell& theCell);
 };
 
 }
