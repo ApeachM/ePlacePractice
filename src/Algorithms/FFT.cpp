@@ -36,8 +36,8 @@ void FFT::init(int dieSize_x, int dieSize_y, int binCnt_x = 8, int binCnt_y = 8)
 
       bin->electricDensity = 0;
       bin->electricPotential = 0;
-      bin->electricForce_x = 0;
-      bin->electricForce_y = 0;
+      bin->electricField_x = 0;
+      bin->electricField_y = 0;
     }
     curser.second = 0;
     curser.first += this->binSize_x;
@@ -88,8 +88,8 @@ void FFT::doFFT() {
     for (int j = 0; j < this->binCnt_y; j++) {
       binDensity[i][j] = this->bins[i][j].electricDensity;
       electricPotential[i][j] = this->bins[i][j].electricPotential;
-      electricForceX[i][j] = this->bins[i][j].electricForce_x;
-      electricForceY[i][j] = this->bins[i][j].electricForce_y;
+      electricForceX[i][j] = this->bins[i][j].electricField_x;
+      electricForceY[i][j] = this->bins[i][j].electricField_y;
     }
   }
 
@@ -116,7 +116,6 @@ void FFT::doFFT() {
     }
   }
 
-  // TODO: Fill this blank referring the upper link @Jiwoo
   for (int i = 0; i < this->binCnt_x; i++) {
     float wx = this->wx[i];
     float wx2 = this->wx_sq[i];
@@ -182,8 +181,8 @@ void FFT::doFFT() {
       for (int j = 0; j < this->binCnt_y; j++) {
         this->bins[i][j].electricDensity = binDensity[i][j];
         this->bins[i][j].electricPotential = electricPotential[i][j];
-        this->bins[i][j].electricForce_x = electricForceX[i][j];
-        this->bins[i][j].electricForce_y = electricForceY[i][j];
+        this->bins[i][j].electricField_x = electricForceX[i][j];
+        this->bins[i][j].electricField_y = electricForceY[i][j];
       }
       delete binDensity[i];
       delete electricPotential[i];
@@ -207,8 +206,8 @@ void FFT::updateDensity(int x, int y, float density) {
 
 pair<float, float> FFT::getElectricForce(int x, int y) {
   return make_pair(
-      this->bins.at(x).at(y).electricForce_x,
-      this->bins.at(x).at(y).electricForce_y);
+      this->bins.at(x).at(y).electricField_x,
+      this->bins.at(x).at(y).electricField_y);
 }
 int FFT::getBinCnt_x() const {
   return this->binCnt_x;
