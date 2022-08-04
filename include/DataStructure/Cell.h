@@ -13,7 +13,7 @@ class Cell {
   int connected_net;
 
   float force_x = 0;
-  float force_y=0;
+  float force_y = 0;
   float velocity_x = 0;
   float velocity_y = 0;
   float mass = 1;
