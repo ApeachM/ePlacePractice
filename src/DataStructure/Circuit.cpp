@@ -227,19 +227,19 @@ void Circuit::doIteration() {
     for (int j = 0; j < this->bins[i].size(); j++) {
       //bin 안의 cell에 접근
       for (int k = 0; k < this->bins[i][j]->correspondCells.size(); k++) {
-        Cell* theCell = this->bins[i][j]->correspondCells[k];
+        Cell *theCell = this->bins[i][j]->correspondCells[k];
 
         //mass
         //this->cell_list[cell_num].mass=1;
 
         //force=bin electricDensity*cell area
         float e_Density = this->bins[i][j]->electricDensity;
-        float
-            cell_area = (this->bins[i][j]->correspondCells[k]->size_x) * (this->bins[i][j]->correspondCells[k]->size_y);
+        float cell_area = (this->bins[i][j]->correspondCells[k]->size_x) * (this->bins[i][j]->correspondCells[k]->size_y);
 
-        // TODO: this part is wrong. Edit here.
-        float force_x = (this->bins[i][j]->electricField_x)*cell_area;
-        float force_y = (this->bins[i][j]->electricField_y)*cell_area;
+        float force_x = (this->bins[i][j]->electricField_x) * cell_area;
+        float force_y = (this->bins[i][j]->electricField_y) * cell_area;
+        theCell->force_x=force_x;
+        theCell->force_y=force_y;
 
         //velocity
         float time_step = 0.01;
@@ -254,8 +254,9 @@ void Circuit::doIteration() {
 
   // TODO: you should determine the cell coordinate by using velocity of cell
 
-  // cell-bin linking update
+// cell-bin linking update
   this->cellClassificationIntoBin();
 }
+
 }
 
