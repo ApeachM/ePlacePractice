@@ -57,13 +57,13 @@ void Circuit::updateDensityInBin() {
     if (!cell.isFiller) {  // standard cell case
       for (auto &bins_col : this->bins) {
         for (auto theBin : bins_col) {
-          theBin->stdArea += theBin->getOverlapWithCell(cell);
+          theBin->stdArea += theBin->getOverlapWithCell(cell) / this->densityScale;
         }
       }
     } else if (cell.isFiller) {  // filler case
       for (auto &bins_col : this->bins) {
         for (auto theBin : bins_col) {
-          theBin->fillerArea += theBin->getOverlapWithCell(cell);
+          theBin->fillerArea += theBin->getOverlapWithCell(cell) / this->densityScale;
         }
       }
     }
@@ -198,7 +198,8 @@ void Circuit::initialization() {
   // this->initialPlacement();
   // this->addFillers()
   this->cellClassificationIntoBin();
-
+  this->updateDensityInBin();
+  this->fft.doFFT();
 }
 void Circuit::cellClassificationIntoBin() {
   int binIdx_x, binIdx_y;

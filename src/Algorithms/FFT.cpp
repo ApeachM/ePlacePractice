@@ -105,14 +105,14 @@ void FFT::doFFT() {
   // Question: why we do these things?
   // https://github.com/The-OpenROAD-Project/OpenROAD/blob/6152e58f84f491089daa6361239468c001e24e34/src/gpl/src/fft.cpp#L154-L166
   for (int i = 0; i < this->binCnt_x; ++i) {
-    binDensity[i][0] += 0.5;
+    binDensity[i][0] *= 0.5;
   }
   for (int i = 0; i < this->binCnt_y; ++i) {
-    binDensity[0][i] += 0.5;
+    binDensity[0][i] *= 0.5;
   }
   for (int i = 0; i < this->binCnt_x; ++i) {
     for (int j = 0; j < this->binCnt_y; ++j) {
-      binDensity[i][j] += 4.0 / this->binCnt_x / this->binCnt_y;
+      binDensity[i][j] *= 4.0 / this->binCnt_x / this->binCnt_y;
     }
   }
 
@@ -151,50 +151,50 @@ void FFT::doFFT() {
       electricForceX[i][j] = electroX;
       electricForceY[i][j] = electroY;
     }
-
-
-    // get equation (23) using external library
-    ddct2d(this->binCnt_x,
-           this->binCnt_y,
-           1,
-           electricPotential,
-           NULL,
-           (int *) &this->workArea_[0],
-           (float *) &this->cosTable[0]);
-    // get equation (24) using external library
-    ddsct2d(this->binCnt_x,
-            this->binCnt_y,
-            1,
-            electricForceX,
-            NULL,
-            (int *) &this->workArea_[0],
-            (float *) &this->cosTable[0]);
-    ddcst2d(this->binCnt_x,
-            this->binCnt_y,
-            1,
-            electricForceY,
-            NULL,
-            (int *) &this->workArea_[0],
-            (float *) &this->cosTable[0]);
-
-    // 2d array to vector(class variables)
-    for (int i = 0; i < this->binCnt_x; i++) {
-      for (int j = 0; j < this->binCnt_y; j++) {
-        this->bins[i][j].electricDensity = binDensity[i][j];
-        this->bins[i][j].electricPotential = electricPotential[i][j];
-        this->bins[i][j].electricForce_x = electricForceX[i][j];
-        this->bins[i][j].electricForce_y = electricForceY[i][j];
-      }
-      delete binDensity[i];
-      delete electricPotential[i];
-      delete electricForceX[i];
-      delete electricForceY[i];
-    }
-    delete binDensity;
-    delete electricPotential;
-    delete electricForceX;
-    delete electricForceY;
   }
+
+  // get equation (23) using external library
+  ddct2d(this->binCnt_x,
+         this->binCnt_y,
+         1,
+         electricPotential,
+         NULL,
+         (int *) &this->workArea_[0],
+         (float *) &this->cosTable[0]);
+  // get equation (24) using external library
+  ddsct2d(this->binCnt_x,
+          this->binCnt_y,
+          1,
+          electricForceX,
+          NULL,
+          (int *) &this->workArea_[0],
+          (float *) &this->cosTable[0]);
+  ddcst2d(this->binCnt_x,
+          this->binCnt_y,
+          1,
+          electricForceY,
+          NULL,
+          (int *) &this->workArea_[0],
+          (float *) &this->cosTable[0]);
+
+  // 2d array to vector(class variables)
+  for (int i = 0; i < this->binCnt_x; i++) {
+    for (int j = 0; j < this->binCnt_y; j++) {
+      this->bins[i][j].electricDensity = binDensity[i][j];
+      this->bins[i][j].electricPotential = electricPotential[i][j];
+      this->bins[i][j].electricForce_x = electricForceX[i][j];
+      this->bins[i][j].electricForce_y = electricForceY[i][j];
+    }
+    delete binDensity[i];
+    delete electricPotential[i];
+    delete electricForceX[i];
+    delete electricForceY[i];
+  }
+  delete binDensity;
+  delete electricPotential;
+  delete electricForceX;
+  delete electricForceY;
+
 }
 
 float FFT::getPotential(int x, int y) {

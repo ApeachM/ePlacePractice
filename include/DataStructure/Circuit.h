@@ -53,6 +53,8 @@ class Circuit : public Parser {
   FFT fft;
   vector<vector<Bin *>> bins;
 
+  float densityScale = 1e10;  // variable for preventing the overflow of binDensity
+
   void parsing(string lefName, string defName);
 
   void addCellList();
