@@ -53,6 +53,8 @@ class Circuit : public Parser {
   FFT fft;
   vector<vector<Bin *>> bins;
 
+  float frictionCoefficient = 0.2;
+
   void parsing(string lefName, string defName);
 
   void addCellList();

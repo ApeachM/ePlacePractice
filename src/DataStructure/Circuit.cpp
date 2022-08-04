@@ -229,9 +229,6 @@ void Circuit::doIteration() {
       for (int k = 0; k < this->bins[i][j]->correspondCells.size(); k++) {
         Cell *theCell = this->bins[i][j]->correspondCells[k];
 
-        //mass
-        //this->cell_list[cell_num].mass=1;
-
         //force=bin electricDensity*cell area
         float e_Density = this->bins[i][j]->electricDensity;
         float cell_area = (this->bins[i][j]->correspondCells[k]->size_x) *
@@ -239,13 +236,16 @@ void Circuit::doIteration() {
 
         float force_x = (this->bins[i][j]->electricField_x) * cell_area;
         float force_y = (this->bins[i][j]->electricField_y) * cell_area;
-        theCell->force_x = force_x;
-        theCell->force_y = force_y;
+        // TODO: wirelength force should be applied.
+
+        // apply non-conservative force (friction) for convergence to solution
+        theCell->force_x = force_x - this->frictionCoefficient * theCell->velocity_x;
+        theCell->force_y = force_y - this->frictionCoefficient * theCell->velocity_y;
 
         //velocity
         float time_step = 0.01;
-        float acceleration_x = force_x / 1;
-        float acceleration_y = force_y / 1;
+        float acceleration_x = theCell->force_x / theCell->mass;
+        float acceleration_y = theCell->force_y / theCell->mass;
         theCell->velocity_x = theCell->velocity_x + acceleration_x * time_step;
         theCell->velocity_y = theCell->velocity_y + acceleration_y * time_step;
       }
