@@ -35,7 +35,7 @@
 #define EPLACEPRACTICE_SRC_DATASTRUCTURE_PARSER_CIRCUIT_H_
 
 #include <unordered_map>
-#include <Eigen/Core>
+//#include <Eigen/Core>
 #include "Parser.h"
 #include "Cell.h"
 #include "FFT.h"
