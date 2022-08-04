@@ -33,6 +33,7 @@
 
 #include "Circuit.h"
 #include <iostream>
+#include <random>
 
 namespace ePlace {
 void Circuit::fftInitialization() {
@@ -125,9 +126,59 @@ void Circuit::addCellList() {
     theCell.connected_net = this->defComponentStor[i].netsAllocated_;
 
     this->cell_list.push_back(theCell);
-    this->cellDictionary[theCell.instName] = &this->cell_list.back();
 
   }
+}
+void Circuit::addFillerCells() {
+  cout << "test add filler" << endl;
+  // get the average cell area and average length of width or height
+  float averageArea = 0;
+  for (const auto &theCell : this->cell_list) {
+    averageArea += theCell.size_x * theCell.size_y;
+  }
+  averageArea /= static_cast<float>(this->cell_list.size());
+  float averageWidth = sqrt(averageArea);
+
+/*
+ * This below number can be so huge.
+  // get the proper number of filler cells
+  long long int dieArea = this->dieSize_x;
+  dieArea *= this->dieSize_y;  // this form is due to overflow
+  long long int totalCellArea = averageArea;
+  totalCellArea *= this->cell_list.size();  // this form is due to overflow
+  long long int emptyArea = dieArea - totalCellArea;
+  if (emptyArea < 0)
+    assert(0);
+  long long int fillerNum = emptyArea / averageArea;
+*/
+  int fillerNum = floor(this->cell_list.size() / 2);
+  // place filler cells
+  // mt19937 gen(1234);  // fix the seed
+  mt19937 genX(random_device{}());
+  mt19937 genY(random_device{}());
+  uniform_real_distribution<float> disX(0, this->dieSize_x);
+  uniform_real_distribution<float> disY(0, this->dieSize_y);
+
+  for (int i = 0; i < fillerNum; ++i) {
+    Cell theFiller;
+    theFiller.x = floor(disX(genX));
+    theFiller.y = floor(disY(genY));
+    theFiller.libName = "Filler";
+    theFiller.instName = "Filler" + to_string(i);
+
+    theFiller.size_x = averageWidth;
+    theFiller.size_y = averageWidth;
+
+    theFiller.connected_net = -1;
+    this->cell_list.push_back(theFiller);
+  }
+
+  // Making Cell Dictionary because all cells are in cell list
+  for (int i = 0; i < this->cell_list.size(); ++i) {
+    Cell *theCell = &this->cell_list[i];
+    this->cellDictionary[theCell->instName] = theCell;
+  }
+
 }
 void Circuit::addNetList() {
 
@@ -193,6 +244,7 @@ float Circuit::getHPWL() {
 }
 void Circuit::initialization() {
   this->addCellList();
+  this->addFillerCells();
   this->addNetList();
   this->fftInitialization();
   // this->initialPlacement();
@@ -228,7 +280,7 @@ void Circuit::doIteration() {
     for (int j = 0; j < this->bins[i].size(); j++) {
       //bin 안의 cell에 접근
       for (int k = 0; k < this->bins[i][j]->correspondCells.size(); k++) {
-        Cell* theCell = this->bins[i][j]->correspondCells[k];
+        Cell *theCell = this->bins[i][j]->correspondCells[k];
 
         //mass
         //this->cell_list[cell_num].mass=1;

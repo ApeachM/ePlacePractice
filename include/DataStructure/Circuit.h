@@ -43,7 +43,7 @@
 namespace ePlace {
 class Circuit : public Parser {
  public:
-  int dieSize_x = 0, dieSize_y = 0;
+  long long int dieSize_x = 0, dieSize_y = 0;
   vector<Cell> cell_list;
   vector<NET> net_list;
 
@@ -53,13 +53,15 @@ class Circuit : public Parser {
   FFT fft;
   vector<vector<Bin *>> bins;
 
-  float densityScale = 1e10;  // variable for preventing the overflow of binDensity
+  float densityScale = 1e11;  // variable for preventing the overflow of binDensity
 
   void parsing(string lefName, string defName);
 
   void addCellList();
 
   void addNetList();
+
+  void addFillerCells();
 
   float getHPWL();
 
