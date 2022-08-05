@@ -252,8 +252,6 @@ void Circuit::initialization() {
   this->addNetList();
   this->initialPlacement(this->initialIteration);
   this->fftInitialization();
-  // this->initialPlacement();
-  // this->addFillers()
   this->cellClassificationIntoBin();
   this->updateDensityInBin();
   this->fft.doFFT();
@@ -412,6 +410,36 @@ pair<float, float> Circuit::getWireLengthForce(const Cell &theCell) {
     }
   }
   return make_pair(forceX * this->wireLengthCoefficient, forceY * this->wireLengthCoefficient);
+}
+void Circuit::initialPlacement(int InitIterationNum = 20) {
+  // place considering only wire length force
+  for (int iterationNum = 0; iterationNum < InitIterationNum; ++iterationNum) {
+    cout << "Initial placement Iter: " << iterationNum << endl;
+    for (int i = 0; i < this->cell_list.size(); ++i) {
+      Cell *theCell = &this->cell_list[i];
+      // Apply Wire Length Force
+      pair<float, float> wireLengthForce = this->getWireLengthForce(*theCell);
+      float force_x = wireLengthForce.first;
+      float force_y = wireLengthForce.second;
+
+      // apply non-conservative force (friction) for convergence to solution
+      theCell->force_x = force_x - this->frictionCoefficient * theCell->velocity_x;
+      theCell->force_y = force_y - this->frictionCoefficient * theCell->velocity_y;
+
+      //velocity
+      float acceleration_x = theCell->force_x / theCell->mass;
+      float acceleration_y = theCell->force_y / theCell->mass;
+      theCell->velocity_x = theCell->velocity_x + acceleration_x * time_step;
+      theCell->velocity_y = theCell->velocity_y + acceleration_y * time_step;
+    }
+
+    moveCellCoordinates();
+    // visualizing
+    string filename = "initPlace/init_img" + to_string(iterationNum) + ".png";
+    cout << "HPWL: " << this->getHPWL() << endl << endl;
+    Visualizer::draw(*this, filename, false);
+  }
+  cout << endl << endl;
 }
 }
 

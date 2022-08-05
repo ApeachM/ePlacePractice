@@ -70,9 +70,6 @@ class Circuit : public Parser {
 
   float getHPWL();
 
-  void initialPlacement() {
-
-  }
   void initialization();
   void fftInitialization();
 
@@ -82,6 +79,7 @@ class Circuit : public Parser {
   void moveCellCoordinates();
   void cellClassificationIntoBin();
   pair<float, float> getWireLengthForce(const Cell& theCell);
+  void initialPlacement(int InitIterationNum);
 };
 
 }
