@@ -327,26 +327,78 @@ void Circuit::moveCellCoordinates() {
   float cellCoordinate_x, cellCoordinate_y;
   float velocity_x, velocity_y;
   float acceleration_x, acceleration_y;
-  float time_step = 0.01;
-
+  int margin = 10;
   for (int i = 0; i < this->cell_list.size(); i++) {
+    Cell theCell = this->cell_list[i];
 
-    cellCoordinate_x = this->cell_list[i].x;
-    cellCoordinate_y = this->cell_list[i].y;
-    velocity_x = this->cell_list[i].velocity_x;
-    velocity_y = this->cell_list[i].velocity_y;
-    acceleration_x = this->cell_list[i].force_x;
-    acceleration_y = this->cell_list[i].force_y;
+    // boundary exception case handling
+    if (theCell.x > this->dieSize_x) {
+      cellCoordinate_x = this->dieSize_x - margin;
+      cellCoordinate_y = this->cell_list[i].y;
+      velocity_x = 0;
+      velocity_y = this->cell_list[i].velocity_y;
+      acceleration_x = 0;
+      acceleration_y = this->cell_list[i].force_y;
 
-    //x+v0*t+1/2*a*t^2
-    cellCoordinate_x = cellCoordinate_x + (velocity_x * time_step) + (0.5 * acceleration_x * time_step * time_step);
-    cellCoordinate_y = cellCoordinate_y + (velocity_y * time_step) + (0.5 * acceleration_y * time_step * time_step);
+      //x+v0*t+1/2*a*t^2
+      cellCoordinate_y = cellCoordinate_y + (velocity_y * time_step) + (0.5 * acceleration_y * time_step * time_step);
+      this->cell_list[i].x = cellCoordinate_x;
+      this->cell_list[i].y = cellCoordinate_y;
+    } else if (theCell.x < 0) {
+      cellCoordinate_x = 0 + margin;
+      cellCoordinate_y = this->cell_list[i].y;
+      velocity_x = 0;
+      velocity_y = this->cell_list[i].velocity_y;
+      acceleration_x = 0;
+      acceleration_y = this->cell_list[i].force_y;
 
-    this->cell_list[i].x = cellCoordinate_x;
-    this->cell_list[i].y = cellCoordinate_y;
+      //x+v0*t+1/2*a*t^2
+      cellCoordinate_y = cellCoordinate_y + (velocity_y * time_step) + (0.5 * acceleration_y * time_step * time_step);
+      this->cell_list[i].x = cellCoordinate_x;
+      this->cell_list[i].y = cellCoordinate_y;
+    }
+    if (theCell.y > this->dieSize_y) {
+      cellCoordinate_x = this->cell_list[i].x;
+      cellCoordinate_y = this->dieSize_y - margin;
+      velocity_x = this->cell_list[i].velocity_y;
+      velocity_y = 0;
+      acceleration_x = this->cell_list[i].force_x;
+      acceleration_y = 0;
+
+      //x+v0*t+1/2*a*t^2
+      cellCoordinate_x = cellCoordinate_x + (velocity_x * time_step) + (0.5 * acceleration_x * time_step * time_step);
+      this->cell_list[i].x = cellCoordinate_x;
+      this->cell_list[i].y = cellCoordinate_y;
+    } else if (theCell.y < 0) {
+      cellCoordinate_x = this->cell_list[i].x;
+      cellCoordinate_y = 0 + margin;
+      velocity_x = this->cell_list[i].velocity_y;
+      velocity_y = 0;
+      acceleration_x = this->cell_list[i].force_x;
+      acceleration_y = 0;
+
+      //x+v0*t+1/2*a*t^2
+      cellCoordinate_x = cellCoordinate_x + (velocity_x * time_step) + (0.5 * acceleration_x * time_step * time_step);
+      this->cell_list[i].x = cellCoordinate_x;
+      this->cell_list[i].y = cellCoordinate_y;
+    } else {
+      // normal case
+      cellCoordinate_x = this->cell_list[i].x;
+      cellCoordinate_y = this->cell_list[i].y;
+      velocity_x = this->cell_list[i].velocity_x;
+      velocity_y = this->cell_list[i].velocity_y;
+      acceleration_x = this->cell_list[i].force_x;
+      acceleration_y = this->cell_list[i].force_y;
+
+      //x+v0*t+1/2*a*t^2
+      cellCoordinate_x = cellCoordinate_x + (velocity_x * time_step) + (0.5 * acceleration_x * time_step * time_step);
+      cellCoordinate_y = cellCoordinate_y + (velocity_y * time_step) + (0.5 * acceleration_y * time_step * time_step);
+      this->cell_list[i].x = cellCoordinate_x;
+      this->cell_list[i].y = cellCoordinate_y;
+
+    }
 
   }
-
 
 }
 

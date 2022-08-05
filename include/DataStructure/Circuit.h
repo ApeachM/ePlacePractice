@@ -55,8 +55,10 @@ class Circuit : public Parser {
 
   float densityScale = 1e11;  // variable for preventing the overflow of binDensity
 
+  float time_step = 0.1;
   float wireLengthCoefficient = 1;
   float frictionCoefficient = 0.2;
+  int initialIteration = 50;
 
   void parsing(string lefName, string defName);
 
@@ -77,7 +79,7 @@ class Circuit : public Parser {
   void updateDensityInBin();
 
   void doIteration(int iterationNum);
-  void moveCellCoordinate();
+  void moveCellCoordinates();
   void cellClassificationIntoBin();
   pair<float, float> getWireLengthForce(const Cell& theCell);
 };
