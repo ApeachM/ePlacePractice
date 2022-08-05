@@ -332,8 +332,8 @@ void Circuit::doIteration(int iterationNum) {
   this->fft.doFFT();
 
   // visualizing
-  string filename = "img" + to_string(iterationNum) + ".bmp";
-  Visualizer::draw(*this, filename);
+  string filename = "ePlace/img" + to_string(iterationNum) + ".png";
+  Visualizer::draw(*this, filename, true);
 }
 
 void Circuit::moveCellCoordinates() {

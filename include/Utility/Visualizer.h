@@ -7,8 +7,8 @@ namespace ePlace {
 namespace Visualizer {
 using namespace cimg_library;
 using Image = cimg_library::CImg<unsigned char>;
-void draw(const Circuit &circuit, const string &filename);
-void plotCells(const Circuit &circuit, cimg_library::CImg<unsigned char> &image);
+void draw(const Circuit &circuit, const string &filename, bool fillerOrNot);
+void plotCells(const Circuit &circuit, cimg_library::CImg<unsigned char> &image, bool fillerOrNot);
 void plotNets(const Circuit &circuit, cimg_library::CImg<unsigned char> &image);
 
 }  // namespace Visualizer

@@ -6,7 +6,7 @@ namespace Visualizer {
 using namespace cimg_library;
 using Image = cimg_library::CImg<unsigned char>;
 int scaleFactor = 100;
-void draw(const Circuit &circuit, const string& filename) {
+void draw(const Circuit &circuit, const string& filename, bool fillerOrNot) {
   int size_x, size_y, size_z;
   size_x = circuit.dieSize_x/scaleFactor;
   size_y = circuit.dieSize_y/scaleFactor;
@@ -15,7 +15,7 @@ void draw(const Circuit &circuit, const string& filename) {
   unsigned char initialValue = 0;
 
   CImg<unsigned char> image(size_x, size_y, size_z, numOfColorChannels, initialValue);
-  plotCells(circuit, image);
+  plotCells(circuit, image, fillerOrNot);
 
   // this->plotNets();
   string filePath = "../Data/outputs/images/" + filename;
@@ -23,7 +23,7 @@ void draw(const Circuit &circuit, const string& filename) {
   image.save(filePathArray);
 
 }
-void plotCells(const Circuit &circuit, cimg_library::CImg<unsigned char> &image) {
+void plotCells(const Circuit &circuit, cimg_library::CImg<unsigned char> &image, bool fillerOrNot) {
   for (auto &cell : circuit.cell_list) {
     int LL_x = cell.x / scaleFactor;
     int LL_y = cell.y / scaleFactor;
@@ -40,9 +40,9 @@ void plotCells(const Circuit &circuit, cimg_library::CImg<unsigned char> &image)
     }
 
     if (!cell.isFiller) {
+      image.draw_rectangle(LL_x, LL_y, UR_x, UR_y, Color::BLACK);
+    } else if (fillerOrNot) {
       image.draw_rectangle(LL_x, LL_y, UR_x, UR_y, Color::LIGHT_YELLOW);
-    } else {
-      image.draw_rectangle(LL_x, LL_y, UR_x, UR_y, Color::LIGHT_GREEN);
     }
   }
 }
