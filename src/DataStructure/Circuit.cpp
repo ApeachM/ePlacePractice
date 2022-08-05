@@ -54,6 +54,13 @@ void Circuit::fftInitialization() {
 void Circuit::updateDensityInBin() {
   // this part will be runtime hotspot
 
+  // reset the density values
+  for (auto &bins_col : this->bins) {
+    for (auto theBin : bins_col) {
+      theBin->stdArea = 0;
+      theBin->fillerArea = 0;
+    }
+  }
   float fillerArea = 0, stdArea = 0;
   for (auto &cell : this->cell_list) {
     if (!cell.isFiller) {  // standard cell case
@@ -166,6 +173,7 @@ void Circuit::addFillerCells() {
 
     theFiller.size_x = averageWidth;
     theFiller.size_y = averageWidth;
+    theFiller.isFiller = true;
 
     this->cell_list.push_back(theFiller);
   }
@@ -271,9 +279,12 @@ void Circuit::cellClassificationIntoBin() {
   for (auto &cell : this->cell_list) {
     cellCoordinate_x = static_cast<float>(cell.x);
     cellCoordinate_y = static_cast<float>(cell.y);
-    binIdx_x = floor(cellCoordinate_x / binSize_x);
-    binIdx_y = floor(cellCoordinate_y / binSize_y);
-    this->bins[binIdx_x][binIdx_y]->correspondCells.push_back(&cell);
+    binIdx_x = min(static_cast<int>(floor(cellCoordinate_x / binSize_x)), static_cast<int>(this->bins.size() - 1));
+    binIdx_x = max(binIdx_x, 0);
+    binIdx_y = min(static_cast<int>(floor(cellCoordinate_y / binSize_y)), static_cast<int>(this->bins[0].size() - 1));
+    binIdx_y = max(binIdx_y, 0);
+
+    this->bins.at(binIdx_x).at(binIdx_y)->correspondCells.push_back(&cell);
   }
 }
 void Circuit::doIteration(int iterationNum) {

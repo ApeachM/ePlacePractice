@@ -53,7 +53,7 @@ class Circuit : public Parser {
   FFT fft;
   vector<vector<Bin *>> bins;
 
-  float densityScale = 1e11;  // variable for preventing the overflow of binDensity
+  float densityScale = 1e6;  // variable for preventing the overflow of binDensity
 
   float time_step = 0.1;
   float wireLengthCoefficient = 1;
