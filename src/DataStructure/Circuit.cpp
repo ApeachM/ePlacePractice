@@ -278,6 +278,7 @@ void Circuit::cellClassificationIntoBin() {
 }
 void Circuit::doIteration(int iterationNum) {
   //모든 bin에 접근
+  cout << "Electric Potential Iteration: " << iterationNum << endl;
 
   for (int i = 0; i < this->bins.size(); i++) {
     for (int j = 0; j < this->bins[i].size(); j++) {
@@ -312,8 +313,12 @@ void Circuit::doIteration(int iterationNum) {
 
     }
   }
+  moveCellCoordinates();
   // cell-bin linking update
   this->cellClassificationIntoBin();
+  // update the electric variables in Bins
+  this->updateDensityInBin();
+  this->fft.doFFT();
 
   // visualizing
   string filename = "img" + to_string(iterationNum) + ".bmp";
