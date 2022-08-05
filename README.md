@@ -18,3 +18,6 @@ cmake ..
 make
 ```
 
+## Contributor
+
+[Minjae Kim](kmj0824@postech.ac.kr) and [Jiwoo Kim](lffnrtlffnr@postech.ac.kr) as POSTECH students in Korea.
