@@ -182,19 +182,25 @@ void Circuit::addNetList() {
   int netNumber = this->defNetStor.size();
   string netName, theCellName;
   Cell *theCell = nullptr;
+
+  this->net_list.reserve(netNumber);
   for (int i = 0; i < netNumber; ++i) {
     NET theNet;  // constructor should be called every for loop
     theNet.name = this->defNetStor[i].name();  // name_ variable return
     for (int j = 0; j < this->defNetStor[i].numConnections(); ++j) {
       theCellName = this->defNetStor[i].instance(j);
-//        theCell = this->cellDictionary.at(theCellName);
       theCell = this->cellDictionary[theCellName];
-      theCell->connected_nets_idx.push_back(netNumber);
       theNet.connectedCells.push_back(theCell);
     }
     this->net_list.push_back(theNet);
     this->netDictionary[theNet.name] = &this->net_list.back();
 
+  }
+  // link cell->net
+  for (auto &theNet : this->net_list) {
+    for (auto connectedCell : theNet.connectedCells) {
+      connectedCell->connected_nets.push_back(&theNet);
+    }
   }
 }
 float Circuit::getHPWL() {
@@ -244,6 +250,7 @@ void Circuit::initialization() {
   this->addCellList();
   this->addFillerCells();
   this->addNetList();
+  this->initialPlacement(this->initialIteration);
   this->fftInitialization();
   // this->initialPlacement();
   // this->addFillers()
@@ -299,7 +306,6 @@ void Circuit::doIteration(int iterationNum) {
         theCell->force_y = force_y - this->frictionCoefficient * theCell->velocity_y;
 
         //velocity
-        float time_step = 0.01;
         float acceleration_x = theCell->force_x / theCell->mass;
         float acceleration_y = theCell->force_y / theCell->mass;
         theCell->velocity_x = theCell->velocity_x + acceleration_x * time_step;
@@ -316,7 +322,7 @@ void Circuit::doIteration(int iterationNum) {
   Visualizer::draw(*this, filename);
 }
 
-void Circuit::moveCellCoordinate() {
+void Circuit::moveCellCoordinates() {
   // TODO: you should determine the cell coordinate by using velocity of cell
   float cellCoordinate_x, cellCoordinate_y;
   float velocity_x, velocity_y;
@@ -346,12 +352,11 @@ void Circuit::moveCellCoordinate() {
 
 pair<float, float> Circuit::getWireLengthForce(const Cell &theCell) {
   float forceX = 0, forceY = 0;
-  for (int i : theCell.connected_nets_idx) {
-    NET theNet = this->net_list[i];
-    for (auto &connectedCell : theNet.connectedCells) {
-      Cell neighborCell = *connectedCell;
-      forceX += neighborCell.x - theCell.x;
-      forceY += neighborCell.y - theCell.y;
+  for (auto theNet : theCell.connected_nets) {
+    for (auto &neighborCell : theNet->connectedCells) {
+      forceX += neighborCell->x - theCell.x;
+      forceY += neighborCell->y - theCell.y;
+
     }
   }
   return make_pair(forceX * this->wireLengthCoefficient, forceY * this->wireLengthCoefficient);

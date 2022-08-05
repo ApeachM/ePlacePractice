@@ -4,13 +4,15 @@
 #include <string>
 
 using namespace std;
+class NET;
+
 class Cell {
  public:
   int x, y;
   float size_x, size_y;
   string libName;
   string instName;
-  vector<int> connected_nets_idx;
+  vector<NET*> connected_nets;
 
   float force_x = 0;
   float force_y = 0;
