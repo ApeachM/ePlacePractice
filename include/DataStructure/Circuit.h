@@ -65,9 +65,9 @@ class Circuit : public Parser {
 
   void parsing(string lefName, string defName);
 
-  void addCellList();
+  void addStdCells();
 
-  void addNetList();
+  void makeNetList();
 
   void addFillerCells();
 
@@ -85,6 +85,7 @@ class Circuit : public Parser {
   void initialPlacement(int InitIterationNum);
 
   void checkCellPlace();
+  void makeCellList();
 };
 
 }

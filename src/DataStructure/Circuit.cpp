@@ -104,28 +104,30 @@ void Circuit::parsing(string lefName, string defName) {
 
 }
 
-void Circuit::addCellList() {
-  //cout<<defComponentStor.size()<<endl;
-  //cout<<lefMacroStor.size()<<endl;
-//    cout<<this->defComponentStor[0]. <<endl;
+void Circuit::makeCellList() {
+  int stdCellNum = this->defComponentStor.size();
+  int fillerCellNum = stdCellNum / 2;
+  this->cell_list.reserve(stdCellNum + fillerCellNum);
+  this->addStdCells();
+  this->addFillerCells();
 
-  //<LefDefParser::defiComponent>::iterator iter;
-  this->cell_list.reserve(this->defComponentStor.size());
+  // Making Cell Dictionary
+  for (auto & theCell : this->cell_list) {
+    Cell *theCellPtr = &theCell;
+    this->cellDictionary[theCellPtr->instName] = theCellPtr;
+  }
+}
+
+void Circuit::addStdCells() {
   for (int i = 0; i < this->defComponentStor.size(); i++) {
 
     Cell theCell;
-    theCell.x = 0;
-    theCell.y = 0;
-
     theCell.x = this->defComponentStor[i].x_;
     theCell.y = this->defComponentStor[i].y_;
     theCell.libName = this->defComponentStor[i].name_;  // library(Macro) name of the cell (ex. "NOR4X4")
     theCell.instName = this->defComponentStor[i].id_;  // instance name (ex. "inst8879")
-    //macroname=theCell.name;
 
     //component 종류 파악, size 대입
-
-
     for (int j = 0; j < this->lefMacroStor.size(); j++) {
       //cout<<lefMacroStor[i].name_<<endl;
       string libName = lefMacroStor[j].name_;
@@ -135,9 +137,7 @@ void Circuit::addCellList() {
         break;
       }
     }
-
     this->cell_list.push_back(theCell);
-
   }
 }
 
@@ -184,16 +184,9 @@ void Circuit::addFillerCells() {
 
     this->cell_list.push_back(theFiller);
   }
-
-  // Making Cell Dictionary because all cells are in cell list
-  for (int i = 0; i < this->cell_list.size(); ++i) {
-    Cell *theCell = &this->cell_list[i];
-    this->cellDictionary[theCell->instName] = theCell;
-  }
-
 }
 
-void Circuit::addNetList() {
+void Circuit::makeNetList() {
 
   int netNumber = this->defNetStor.size();
   string netName, theCellName;
@@ -265,9 +258,8 @@ float Circuit::getHPWL() {
 }
 
 void Circuit::initialization() {
-  this->addCellList();
-  this->addFillerCells();
-  this->addNetList();
+  this->makeCellList();
+  this->makeNetList();
   this->initialPlacement(this->initialIteration);
   this->fftInitialization();
   this->cellClassificationIntoBin();
