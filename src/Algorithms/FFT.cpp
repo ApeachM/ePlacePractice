@@ -70,14 +70,10 @@ void FFT::doFFT() {
   // https://github.com/The-OpenROAD-Project/OpenROAD/blob/6152e58f84f491089daa6361239468c001e24e34/src/gpl/src/fft.cpp#L150-L214
 
   // vector to 2d array
-  float **binDensity;
-  float **electricPotential;
-  float **electricForceX;
-  float **electricForceY;
-  binDensity = new float *[this->binCnt_x];
-  electricPotential = new float *[this->binCnt_x];
-  electricForceX = new float *[this->binCnt_x];
-  electricForceY = new float *[this->binCnt_x];
+  auto binDensity = new float *[this->binCnt_x];
+  auto electricPotential = new float *[this->binCnt_x];
+  auto electricForceX = new float *[this->binCnt_x];
+  auto electricForceY = new float *[this->binCnt_x];
 
   for (int i = 0; i < this->binCnt_x; i++) {
     binDensity[i] = new float[this->binCnt_y];
@@ -99,8 +95,8 @@ void FFT::doFFT() {
                -1,
                binDensity,
                NULL,
-               (int *) &this->workArea_[0],
-               (float *) &this->cosTable[0]);
+               this->workArea_.data(),
+               this->cosTable.data());
 
   // Question: why we do these things?
   // https://github.com/The-OpenROAD-Project/OpenROAD/blob/6152e58f84f491089daa6361239468c001e24e34/src/gpl/src/fft.cpp#L154-L166
@@ -158,23 +154,23 @@ void FFT::doFFT() {
          1,
          electricPotential,
          NULL,
-         (int *) &this->workArea_[0],
-         (float *) &this->cosTable[0]);
+         this->workArea_.data(),
+         this->cosTable.data());
   // get equation (24) using external library
   ddsct2d(this->binCnt_x,
           this->binCnt_y,
           1,
           electricForceX,
           NULL,
-          (int *) &this->workArea_[0],
-          (float *) &this->cosTable[0]);
+          this->workArea_.data(),
+          this->cosTable.data());
   ddcst2d(this->binCnt_x,
           this->binCnt_y,
           1,
           electricForceY,
           NULL,
-          (int *) &this->workArea_[0],
-          (float *) &this->cosTable[0]);
+          this->workArea_.data(),
+          this->cosTable.data());
 
   // 2d array to vector(class variables)
   for (int i = 0; i < this->binCnt_x; i++) {

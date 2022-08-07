@@ -41,6 +41,9 @@
 #include "FFT.h"
 
 namespace ePlace {
+
+using namespace std;
+
 class Circuit : public Parser {
  public:
   long long int dieSize_x = 0, dieSize_y = 0;
@@ -80,6 +83,8 @@ class Circuit : public Parser {
   void cellClassificationIntoBin();
   pair<float, float> getWireLengthForce(const Cell& theCell);
   void initialPlacement(int InitIterationNum);
+
+  void checkCellPlace();
 };
 
 }

@@ -7,13 +7,8 @@ namespace ePlace {
 namespace Visualizer {
 using namespace cimg_library;
 using Image = cimg_library::CImg<unsigned char>;
-void draw(const Circuit &circuit, const string &filename, bool fillerOrNot);
-void plotCells(const Circuit &circuit, cimg_library::CImg<unsigned char> &image, bool fillerOrNot);
-void plotNets(const Circuit &circuit, cimg_library::CImg<unsigned char> &image);
 
-}  // namespace Visualizer
-}  // namespace ePlace
-
+constexpr int scaleFactor{100};
 
 namespace Color {
 // Cell     - LIGHT_YELLOW
@@ -27,5 +22,12 @@ const unsigned char PINK[] = {255, 51, 255};
 const unsigned char LIGHT_YELLOW[] = {255, 236, 196};
 const unsigned char LIGHT_GREEN[] = {73, 235, 52};
 }  // namespace Color
+
+void draw(const Circuit &circuit, const string &filename, bool fillerOrNot);
+void plotCells(const Circuit &circuit, Image &image, bool fillerOrNot);
+void plotNets(const Circuit &circuit, Image &image);
+
+}  // namespace Visualizer
+}  // namespace ePlace
 
 #endif //EPLACEPRACTICE_SRC_UTILITY_VISUALIZER_H_

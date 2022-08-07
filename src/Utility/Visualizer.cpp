@@ -3,16 +3,13 @@
 
 namespace ePlace {
 namespace Visualizer {
-using namespace cimg_library;
-using Image = cimg_library::CImg<unsigned char>;
-int scaleFactor = 100;
+
 void draw(const Circuit &circuit, const string& filename, bool fillerOrNot) {
-  int size_x, size_y, size_z;
-  size_x = circuit.dieSize_x/scaleFactor;
-  size_y = circuit.dieSize_y/scaleFactor;
-  size_z = 1;
+  int size_x = circuit.dieSize_x / scaleFactor;
+  int size_y = circuit.dieSize_y / scaleFactor;
+  int size_z = 1;
   int numOfColorChannels = 3;  // R G B
-  unsigned char initialValue = 0;
+  unsigned char initialValue = 255;
 
   CImg<unsigned char> image(size_x, size_y, size_z, numOfColorChannels, initialValue);
   plotCells(circuit, image, fillerOrNot);
@@ -23,32 +20,26 @@ void draw(const Circuit &circuit, const string& filename, bool fillerOrNot) {
   image.save(filePathArray);
 
 }
+
 void plotCells(const Circuit &circuit, cimg_library::CImg<unsigned char> &image, bool fillerOrNot) {
-  for (auto &cell : circuit.cell_list) {
+  for (const auto &cell : circuit.cell_list) {
     int LL_x = cell.x / scaleFactor;
     int LL_y = cell.y / scaleFactor;
-    int UR_x, UR_y;
-    if (floor(cell.size_x/scaleFactor) == 0) {
-      UR_x = cell.x / scaleFactor + 5;
-    } else {
-      UR_x = (cell.x + floor(cell.size_x)) / scaleFactor;
-    }
-    if (floor(cell.size_y/scaleFactor) == 0) {
-      UR_y = cell.y / scaleFactor + 5;
-    } else {
-      UR_y = (cell.y + floor(cell.size_y)) / scaleFactor;
-    }
+
+    int UR_x = LL_x + 5;
+    int UR_y = LL_y + 5;
 
     if (!cell.isFiller) {
       image.draw_rectangle(LL_x, LL_y, UR_x, UR_y, Color::BLACK);
     } else if (fillerOrNot) {
-      image.draw_rectangle(LL_x, LL_y, UR_x, UR_y, Color::LIGHT_YELLOW);
+      image.draw_rectangle(LL_x, LL_y, UR_x, UR_y, Color::RED);
     }
   }
 }
+
 void plotNets(const Circuit &circuit, cimg_library::CImg<unsigned char> &image) {
 
 }
-}
-}
+}  // namespace Visualizer
+}  // namespace ePlace
 

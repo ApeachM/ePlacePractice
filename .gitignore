@@ -2,3 +2,5 @@
 /cmake-build-debug-remote-host
 /build
 /.idea
+.vscode
+.DS_Store

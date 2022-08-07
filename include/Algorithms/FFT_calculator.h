@@ -3,7 +3,7 @@
 
 namespace ePlace {
 class FFT_calculator {
- public:
+ protected:
   // The following FFT library came from
   // http://www.kurims.kyoto-u.ac.jp/~ooura/fft.html
 
