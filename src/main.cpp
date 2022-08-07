@@ -13,8 +13,12 @@ int main(int argc, char* argv[]) {
   Circuit circuit;
   int benchNum = 1;
   string benchNum_str = to_string(benchNum);
-  string lefName = "../Data/bench/ispd18/ispd18_test" + benchNum_str + "/ispd18_test" + benchNum_str + ".input.lef";
-  string defName = "../Data/bench/ispd18/ispd18_test" + benchNum_str + "/ispd18_test" + benchNum_str + ".input.def";
+  string lefName = "../Data/bench/simple/nangate45.lef";
+  string defName = "../Data/bench/simple/simple01.def";
+
+//  string lefName = "../Data/bench/ispd18/ispd18_test" + benchNum_str + "/ispd18_test" + benchNum_str + ".input.lef";
+//  string defName = "../Data/bench/ispd18/ispd18_test" + benchNum_str + "/ispd18_test" + benchNum_str + ".input.def";
+
 
   circuit.parsing(lefName, defName);
   circuit.initialization();
