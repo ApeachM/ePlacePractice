@@ -20,4 +20,4 @@ make
 
 ## Contributor
 
-[Minjae Kim](kmj0824@postech.ac.kr) and [Jiwoo Kim](lffnrtlffnr@postech.ac.kr) as POSTECH students in Korea.
+[Minjae Kim](kmj0824@postech.ac.kr), [Jiwoo Kim](lffnrtlffnr@postech.ac.kr), and [Dohun Kim](dohunkim.ee@gmail.com) as POSTECH students in Korea.
