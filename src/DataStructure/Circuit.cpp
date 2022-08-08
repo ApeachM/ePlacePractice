@@ -31,13 +31,15 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ///////////////////////////////////////////////////////////////////////////////
 
-#include "Circuit.h"
-#include "Visualizer.h"
 #include <iostream>
 #include <random>
 #include <algorithm>
 #include <cmath>
 #include <cassert>
+#define COMPLETE_INPUT 0
+#include "Circuit.h"
+#include "Visualizer.h"
+
 
 namespace ePlace {
 void Circuit::fftInitialization() {
@@ -119,11 +121,22 @@ void Circuit::makeCellList() {
 }
 
 void Circuit::addStdCells() {
-  for (int i = 0; i < this->defComponentStor.size(); i++) {
+  // mt19937 gen(1234);  // fix the seed
+  mt19937 genX(random_device{}());
+  mt19937 genY(random_device{}());
+  uniform_real_distribution<float> disX(0, this->dieSize_x);
+  uniform_real_distribution<float> disY(0, this->dieSize_y);
 
+  for (int i = 0; i < this->defComponentStor.size(); i++) {
     Cell theCell;
+#if COMPLETE_INPUT
     theCell.x = this->defComponentStor[i].x_;
     theCell.y = this->defComponentStor[i].y_;
+#else
+    theCell.x = floor(disX(genX));
+    theCell.y = floor(disY(genY));
+#endif
+
     theCell.libName = this->defComponentStor[i].name_;  // library(Macro) name of the cell (ex. "NOR4X4")
     theCell.instName = this->defComponentStor[i].id_;  // instance name (ex. "inst8879")
 
