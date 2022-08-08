@@ -8,7 +8,7 @@ namespace Visualizer {
 using namespace cimg_library;
 using Image = cimg_library::CImg<unsigned char>;
 
-constexpr int scaleFactor{100};
+constexpr int scaleFactor{500};
 
 namespace Color {
 // Cell     - LIGHT_YELLOW

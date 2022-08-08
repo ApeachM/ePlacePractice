@@ -60,8 +60,8 @@ class Circuit : public Parser {
   float densityScale = 1e6;  // variable for preventing the overflow of binDensity
 
   float time_step = 0.1;
-  float wireLengthCoefficient = 1;
-  float frictionCoefficient = 0.2;
+  float wireLengthCoefficient = 0.1;
+  float frictionCoefficient = 1;
   int initialIteration = 50;
 
   void parsing(string lefName, string defName);

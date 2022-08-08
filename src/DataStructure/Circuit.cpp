@@ -40,7 +40,6 @@
 #include "Circuit.h"
 #include "Visualizer.h"
 
-
 namespace ePlace {
 void Circuit::fftInitialization() {
   fft.init(this->dieSize_x, this->dieSize_y, 64, 64);
@@ -347,13 +346,23 @@ void Circuit::doIteration(int iterationNum) {
         theCell->force_y = (theBin->electricField_y) * cell_area;
 
         // Apply Wire Length Force
-        pair<float, float> wireLengthForce = this->getWireLengthForce(*theCell);
-        theCell->force_x += wireLengthForce.first;
-        theCell->force_y += wireLengthForce.second;
+        if (!theCell->isFiller) {
+          pair<float, float> wireLengthForce = this->getWireLengthForce(*theCell);
+          theCell->force_x += wireLengthForce.first;
+          theCell->force_y += wireLengthForce.second;
+        }
 
         // apply non-conservative force (friction) for convergence to solution
-        // theCell->force_x -= this->frictionCoefficient * theCell->velocity_x;
-        // theCell->force_y -= this->frictionCoefficient * theCell->velocity_y;
+        float friction_x = this->frictionCoefficient * theCell->velocity_x;
+        float friction_y = this->frictionCoefficient * theCell->velocity_y;
+        theCell->force_x -= friction_x;
+        theCell->force_y -= friction_y;
+
+        // exception handling if the magnitude of friction is more than the total force
+        if (friction_x * theCell->force_x > 0 && abs(friction_x) > abs(theCell->force_x))
+          theCell->force_x = 0;
+        if (friction_y * theCell->force_y > 0 && abs(friction_y) > abs(theCell->force_y))
+          theCell->force_y = 0;
       }
 
     }
@@ -374,27 +383,25 @@ void Circuit::doIteration(int iterationNum) {
 }
 
 void Circuit::moveCellCoordinates() {
-  // TODO: you should determine the cell coordinate by using velocity of cell
-  float cellCoordinate_x, cellCoordinate_y;
-  float velocity_x, velocity_y;
-  float acceleration_x, acceleration_y;
   int margin = 10;
 
   for (auto &theCell : this->cell_list) {
-    const float &s0_x = theCell.x;
-    const float &s0_y = theCell.y;
-    const float &v0_x = theCell.velocity_x;
-    const float &v0_y = theCell.velocity_y;
-    const float &a_x = theCell.force_x / theCell.mass;
-    const float &a_y = theCell.force_y / theCell.mass;
+    const float positionX = theCell.x;
+    const float positionY = theCell.y;
+    const float velocityX = theCell.velocity_x;
+    const float velocityY = theCell.velocity_y;
+    const float accelerationX = theCell.force_x / theCell.mass;
+    const float accelerationY = theCell.force_y / theCell.mass;
 
     // v = v0 + at
-    theCell.velocity_x = v0_x + a_x * time_step;
-    theCell.velocity_y = v0_y + a_y * time_step;
+    theCell.velocity_x = velocityX + accelerationX * this->time_step;
+    theCell.velocity_y = velocityY + accelerationY * this->time_step;
 
-    // s = s0 + (v + v0)/2 * t
-    theCell.x = round(s0_x + 0.5 * (theCell.velocity_x + v0_x) * time_step);
-    theCell.y = round(s0_y + 0.5 * (theCell.velocity_y + v0_y) * time_step);
+    // s = s0 + v*t + 1/2*a*t^2
+    theCell.x = floor(positionX + velocityX * this->time_step +
+        0.5 * accelerationX * this->time_step * this->time_step);
+    theCell.y = floor(positionY + velocityY * this->time_step +
+        0.5 * accelerationY * this->time_step * this->time_step);
 
     // boundary exceptions
     if (theCell.x > this->dieSize_x) {
@@ -433,14 +440,25 @@ void Circuit::initialPlacement(int InitIterationNum = 20) {
   for (int iterationNum = 0; iterationNum < InitIterationNum; ++iterationNum) {
     cout << "Initial placement Iter: " << iterationNum << endl;
     for (auto &theCell : this->cell_list) {
-      // Apply Wire Length Force
-      pair<float, float> wireLengthForce = this->getWireLengthForce(theCell);
-      theCell.force_x = wireLengthForce.first;
-      theCell.force_y = wireLengthForce.second;
+      if (!theCell.isFiller) {
+        // Apply Wire Length Force
+        pair<float, float> wireLengthForce = this->getWireLengthForce(theCell);
+        theCell.force_x = wireLengthForce.first;
+        theCell.force_y = wireLengthForce.second;
 
-      // apply non-conservative force (friction) for convergence to solution
-      // theCell.force_x -= this->frictionCoefficient * theCell.velocity_x;
-      // theCell.force_y -= this->frictionCoefficient * theCell.velocity_y;
+        // apply non-conservative force (friction) for convergence to solution
+        float friction_x = this->frictionCoefficient * theCell.velocity_x;
+        float friction_y = this->frictionCoefficient * theCell.velocity_y;
+        theCell.force_x -= friction_x;
+        theCell.force_y -= friction_y;
+
+        // exception handling if the magnitude of friction is more than the total force
+        if (friction_x * theCell.force_x > 0 && abs(friction_x) > abs(theCell.force_x))
+          theCell.force_x = 0;
+        if (friction_y * theCell.force_y > 0 && abs(friction_y) > abs(theCell.force_y))
+          theCell.force_y = 0;
+      }
+
     }
     this->moveCellCoordinates();
 

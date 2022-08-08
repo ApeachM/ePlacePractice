@@ -24,7 +24,7 @@ int main(int argc, char* argv[]) {
   circuit.initialization();
 
   cout << "Electric potential apply." << endl;
-  for (int i = 0; i < 30; ++i) {
+  for (int i = 0; i < 300; ++i) {
     circuit.doIteration(i);
     cout << "HPWL:" << circuit.getHPWL() << endl;
   }
