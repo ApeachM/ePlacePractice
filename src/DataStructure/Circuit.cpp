@@ -112,7 +112,7 @@ void Circuit::makeCellList() {
   this->addFillerCells();
 
   // Making Cell Dictionary
-  for (auto & theCell : this->cell_list) {
+  for (auto &theCell : this->cell_list) {
     Cell *theCellPtr = &theCell;
     this->cellDictionary[theCellPtr->instName] = theCellPtr;
   }
@@ -189,26 +189,37 @@ void Circuit::addFillerCells() {
 void Circuit::makeNetList() {
 
   int netNumber = this->defNetStor.size();
-  string netName, theCellName;
+  string netName, theComponentName;
   Cell *theCell = nullptr;
 
   this->net_list.reserve(netNumber);
   for (int i = 0; i < netNumber; ++i) {
-    NET theNet;  // constructor should be called every for loop
-    theNet.name = this->defNetStor[i].name();  // name_ variable return
+    Net theNet;
+    theNet.name = this->defNetStor[i].name();
     for (int j = 0; j < this->defNetStor[i].numConnections(); ++j) {
-      theCellName = this->defNetStor[i].instance(j);
-      theCell = this->cellDictionary[theCellName];
-      theNet.connectedCells.push_back(theCell);
+
+      theComponentName = this->defNetStor[i].instance(j);
+      if (theComponentName == "PIN") {
+        // TODO: link net->pin
+      } else {
+        // link net->cell
+        theCell = this->cellDictionary[theComponentName];
+        theNet.connectedCells.push_back(theCell);
+      }
     }
     this->net_list.push_back(theNet);
     this->netDictionary[theNet.name] = &this->net_list.back();
 
   }
-  // link cell->net
+  // link component->net
   for (auto &theNet : this->net_list) {
-    for (auto connectedCell : theNet.connectedCells) {
-      connectedCell->connected_nets.push_back(&theNet);
+    for (auto connectedComponent : theNet.connectedCells) {
+      if (connectedComponent != nullptr)
+        // link cell->net
+        connectedComponent->connected_nets.push_back(&theNet);
+      else {
+        // TODO: link pin->net
+      }
     }
   }
 }
@@ -255,6 +266,20 @@ float Circuit::getHPWL() {
 
   return hpwl;
 
+}
+
+void Circuit::makePinList() {
+  for (int i = 0; i < this->defPinStor.size(); ++i) {
+    auto pinData = this->defComponentStor[i];
+    Pin thePin;
+    thePin.pinName = pinData.name();
+    for (int j = 0; j < pinData.numNets(); ++j) {
+      thePin.correspondNetNames.emplace_back(pinData.net(j));
+    }
+    thePin.x = pinData.placementX();
+    thePin.y = pinData.placementY();
+    this->pin_list.push_back(thePin);
+  }
 }
 
 void Circuit::initialization() {
@@ -349,7 +374,7 @@ void Circuit::moveCellCoordinates() {
     const float &v0_y = theCell.velocity_y;
     const float &a_x = theCell.force_x / theCell.mass;
     const float &a_y = theCell.force_y / theCell.mass;
-  
+
     // v = v0 + at
     theCell.velocity_x = v0_x + a_x * time_step;
     theCell.velocity_y = v0_y + a_y * time_step;
@@ -360,14 +385,14 @@ void Circuit::moveCellCoordinates() {
 
     // boundary exceptions
     if (theCell.x > this->dieSize_x) {
-      theCell.x = (int)this->dieSize_x;
+      theCell.x = (int) this->dieSize_x;
       theCell.velocity_x = 0;
     } else if (theCell.x < 0) {
       theCell.x = 0;
       theCell.velocity_x = 0;
     }
     if (theCell.y > this->dieSize_y) {
-      theCell.y = (int)this->dieSize_y;
+      theCell.y = (int) this->dieSize_y;
       theCell.velocity_y = 0;
     } else if (theCell.y < 0) {
       theCell.y = 0;

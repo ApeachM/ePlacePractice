@@ -1,6 +1,6 @@
 #ifndef EPLACEPRACTICE_INCLUDE_DATASTRUCTURE_BIN_H_
 #define EPLACEPRACTICE_INCLUDE_DATASTRUCTURE_BIN_H_
-#include "Cell.h"
+#include "Component.h"
 
 namespace ePlace {
 class Bin {

@@ -37,7 +37,7 @@
 #include <unordered_map>
 //#include <Eigen/Core>
 #include "Parser.h"
-#include "Cell.h"
+#include "Component.h"
 #include "FFT.h"
 
 namespace ePlace {
@@ -48,10 +48,11 @@ class Circuit : public Parser {
  public:
   long long int dieSize_x = 0, dieSize_y = 0;
   vector<Cell> cell_list;
-  vector<NET> net_list;
+  vector<Net> net_list;
+  vector<Pin> pin_list;
 
   unordered_map<string, Cell *> cellDictionary;  // this data type is similar with dictionary in python
-  unordered_map<string, NET *> netDictionary;
+  unordered_map<string, Net *> netDictionary;
 
   FFT fft;
   vector<vector<Bin *>> bins;
@@ -86,6 +87,7 @@ class Circuit : public Parser {
 
   void checkCellPlace();
   void makeCellList();
+  void makePinList();
 };
 
 }

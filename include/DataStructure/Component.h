@@ -4,7 +4,7 @@
 #include <string>
 
 using namespace std;
-class NET;
+class Net;
 
 class Cell {
  public:
@@ -12,7 +12,7 @@ class Cell {
   float size_x, size_y;
   string libName;
   string instName;
-  vector<NET*> connected_nets;
+  vector<Net*> connected_nets;
 
   float force_x = 0;
   float force_y = 0;
@@ -23,10 +23,16 @@ class Cell {
   bool isFiller = false;
 };
 
-class NET {
+class Net {
  public:
   string name;
   vector<Cell *> connectedCells;
 };
 
+class Pin {
+ public:
+  string pinName;
+  vector<string> correspondNetNames;
+  int x, y;
+};
 #endif //EPLACEPRACTICE_SRC_DATASTRUCTURE_CELL_H_
