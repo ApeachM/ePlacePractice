@@ -30,7 +30,7 @@ void plotCells(const Circuit &circuit, cimg_library::CImg<unsigned char> &image,
     int UR_y = LL_y + 5;
 
     if (!cell.isFiller) {
-      image.draw_rectangle(LL_x, LL_y, UR_x, UR_y, Color::BLACK);
+      image.draw_rectangle(LL_x, LL_y, UR_x, UR_y, Color::DIM_GRAY);
     } else if (fillerOrNot) {
       image.draw_rectangle(LL_x, LL_y, UR_x, UR_y, Color::RED);
     }

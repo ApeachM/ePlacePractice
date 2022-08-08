@@ -1,4 +1,5 @@
 #include <cmath>
+#include <iostream>
 #include "FFT.h"
 #define PI 3.141592653589793238462L
 
@@ -127,17 +128,6 @@ void FFT::doFFT() {
       if (i == 0 && j == 0) {
         phi = electroX = electroY = 0.0f;
       } else {
-        //////////// lutong
-        //  denom =
-        //  wx2 / 4.0 +
-        //  wy2 / 4.0 ;
-        // a_phi = a_den / denom ;
-        ////b_phi = 0 ; // -1.0 * b / denom ;
-        ////a_ex = 0 ; // b_phi * wx ;
-        // a_ex = a_phi * wx / 2.0 ;
-        ////a_ey = 0 ; // b_phi * wy ;
-        // a_ey = a_phi * wy / 2.0 ;
-        ///////////
         phi = density / (wx2 + wy2);
         electroX = phi * wx;
         electroY = phi * wy;

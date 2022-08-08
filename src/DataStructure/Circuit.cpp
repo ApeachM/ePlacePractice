@@ -58,6 +58,7 @@ void Circuit::fftInitialization() {
 
 void Circuit::updateDensityInBin() {
   // this part will be runtime hotspot
+  // TODO: we can optimize this part.
 
   // reset the density values
   for (auto &bins_col : this->bins) {
@@ -66,7 +67,6 @@ void Circuit::updateDensityInBin() {
       theBin->fillerArea = 0;
     }
   }
-  float fillerArea = 0, stdArea = 0;
   for (auto &cell : this->cell_list) {
     if (!cell.isFiller) {  // standard cell case
       for (auto &bins_col : this->bins) {
@@ -267,15 +267,11 @@ float Circuit::getHPWL() {
       if (min_y > y_point) {
         min_y = y_point;
       }
-
       //calculate hpwl_edge&add to hpwl
       hpwl_edge = (max_x - min_x) + (max_y - min_y);
       hpwl = hpwl + hpwl_edge;
-
     }
-
   }
-
   return hpwl;
 
 }
@@ -466,9 +462,11 @@ void Circuit::initialPlacement(int InitIterationNum = 20) {
     this->checkCellPlace();
 
     // visualizing
-    string filename = "initPlace/init_img" + to_string(iterationNum) + ".png";
-    cout << "HPWL: " << this->getHPWL() << endl << endl;
-    Visualizer::draw(*this, filename, false);
+    if (iterationNum % 5 == 0) {
+      string filename = "initPlace/init_img" + to_string(iterationNum) + ".png";
+      cout << "HPWL: " << this->getHPWL() << endl << endl;
+      Visualizer::draw(*this, filename, false);
+    }
   }
   cout << endl << endl;
 }
