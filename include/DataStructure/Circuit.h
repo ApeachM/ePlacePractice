@@ -56,13 +56,14 @@ class Circuit : public Parser {
 
   FFT fft;
   vector<vector<Bin *>> bins;
+  float time_step = 0.05;
 
-  float densityScale = 1e-4;  // variable for preventing the overflow of binDensity
-
-  float time_step = 0.02;
+  float densityScale = 10000;  // variable for preventing the overflow of binDensity
   float wireLengthCoefficient = 1e-1;
-  float frictionCoefficient = 50;
-  int initialIteration = 500;
+  float frictionCoefficient = 3;
+  int initialIteration = 100;
+  int binWidthSize = 32;
+  int binHeightSize = 32;
 
   void parsing(string lefName, string defName);
 

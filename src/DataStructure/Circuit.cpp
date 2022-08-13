@@ -42,7 +42,7 @@
 
 namespace ePlace {
 void Circuit::fftInitialization() {
-  fft.init(this->dieSize_x, this->dieSize_y, 64, 64);
+  fft.init(this->dieSize_x, this->dieSize_y, this->binWidthSize, this->binHeightSize);
 
   // set this->bins variable
   this->bins.reserve(fft.getBinCnt_x());
@@ -71,13 +71,13 @@ void Circuit::updateDensityInBin() {
     if (!cell.isFiller) {  // standard cell case
       for (auto &bins_col : this->bins) {
         for (auto theBin : bins_col) {
-          theBin->stdArea += theBin->getOverlapWithCell(cell) / this->densityScale;
+          theBin->stdArea += theBin->getOverlapWithCell(cell) * this->densityScale;
         }
       }
     } else if (cell.isFiller) {  // filler case
       for (auto &bins_col : this->bins) {
         for (auto theBin : bins_col) {
-          theBin->fillerArea += theBin->getOverlapWithCell(cell) / this->densityScale;
+          theBin->fillerArea += theBin->getOverlapWithCell(cell) * this->densityScale;
         }
       }
     }
@@ -462,11 +462,11 @@ void Circuit::initialPlacement(int InitIterationNum = 20) {
     this->checkCellPlace();
 
     // visualizing
-    if (iterationNum % 5 == 0) {
+//    if (iterationNum % 5 == 0) {
       string filename = "initPlace/init_img" + to_string(iterationNum) + ".png";
       cout << "HPWL: " << this->getHPWL() << endl << endl;
       Visualizer::draw(*this, filename, false);
-    }
+//    }
   }
   cout << endl << endl;
 }
