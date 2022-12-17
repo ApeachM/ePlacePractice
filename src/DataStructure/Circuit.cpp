@@ -234,6 +234,12 @@ void Circuit::makeNetList() {
       }
     }
   }
+
+  // link net->pin
+  for (auto &pin : pin_list) {
+    auto &net = netDictionary[pin.correspondNetName];
+    net->connectedPins.push_back(&pin);
+  }
 }
 
 float Circuit::getHPWL() {
@@ -278,12 +284,10 @@ float Circuit::getHPWL() {
 
 void Circuit::makePinList() {
   for (int i = 0; i < this->defPinStor.size(); ++i) {
-    auto pinData = this->defComponentStor[i];
+    auto pinData = this->defPinStor[i];
     Pin thePin;
-    thePin.pinName = pinData.name();
-    for (int j = 0; j < pinData.numNets(); ++j) {
-      thePin.correspondNetNames.emplace_back(pinData.net(j));
-    }
+    thePin.pinName = pinData.pinName();
+    thePin.correspondNetName = pinData.netName();
     thePin.x = pinData.placementX();
     thePin.y = pinData.placementY();
     this->pin_list.push_back(thePin);
@@ -292,8 +296,9 @@ void Circuit::makePinList() {
 
 void Circuit::initialization() {
   this->makeCellList();
+  this->makePinList();
   this->makeNetList();
-  this->initialPlacement(this->initialIteration);
+  this->initialPlacement(30);
   this->fftInitialization();
   this->cellClassificationIntoBin();
   this->updateDensityInBin();
@@ -374,7 +379,7 @@ void Circuit::doIteration(int iterationNum) {
   this->checkCellPlace();
 
   // visualizing
-  string filename = "ePlace/img" + to_string(iterationNum) + ".png";
+  string filename = "ePlace/img" + to_string(iterationNum) + ".bmp";
   Visualizer::draw(*this, filename, true);
 }
 
@@ -425,6 +430,10 @@ pair<float, float> Circuit::getWireLengthForce(const Cell &theCell) {
       forceX += neighborCell->x - theCell.x;
       forceY += neighborCell->y - theCell.y;
     }
+    for (auto *thePin : theNet->connectedPins) {
+      forceX += thePin->x - theCell.x;
+      forceY += thePin->y - theCell.y;
+    }
   }
   forceX *= this->wireLengthCoefficient;
   forceY *= this->wireLengthCoefficient;
@@ -432,6 +441,13 @@ pair<float, float> Circuit::getWireLengthForce(const Cell &theCell) {
 }
 
 void Circuit::initialPlacement(int InitIterationNum = 20) {
+  for (auto &theCell : this->cell_list) {
+    if (!theCell.isFiller) {
+      theCell.x = this->dieSize_x / 2;
+      theCell.y = this->dieSize_y / 2;
+    }
+  }
+
   // place considering only wire length force
   for (int iterationNum = 0; iterationNum < InitIterationNum; ++iterationNum) {
     cout << "Initial placement Iter: " << iterationNum << endl;
@@ -463,7 +479,7 @@ void Circuit::initialPlacement(int InitIterationNum = 20) {
 
     // visualizing
     if (iterationNum % 5 == 0) {
-      string filename = "initPlace/init_img" + to_string(iterationNum) + ".png";
+      string filename = "initPlace/init_img" + to_string(iterationNum) + ".bmp";
       cout << "HPWL: " << this->getHPWL() << endl << endl;
       Visualizer::draw(*this, filename, false);
     }

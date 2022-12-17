@@ -11,12 +11,13 @@ void draw(const Circuit &circuit, const string& filename, bool fillerOrNot) {
   int numOfColorChannels = 3;  // R G B
   unsigned char initialValue = 255;
 
-  CImg<unsigned char> image(size_x, size_y, size_z, numOfColorChannels, initialValue);
+  cimg_library::CImg<unsigned char> image(size_x, size_y, size_z, numOfColorChannels, initialValue);
   plotCells(circuit, image, fillerOrNot);
 
   // this->plotNets();
   string filePath = "../Data/outputs/images/" + filename;
   const char *filePathArray = filePath.c_str();
+//  image.sa
   image.save(filePathArray);
 
 }

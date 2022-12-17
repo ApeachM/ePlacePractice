@@ -12,7 +12,7 @@ class Cell {
   float size_x, size_y;
   string libName;
   string instName;
-  vector<Net*> connected_nets;
+  vector<Net *> connected_nets;
 
   float force_x = 0;
   float force_y = 0;
@@ -22,17 +22,18 @@ class Cell {
 
   bool isFiller = false;
 };
+class Pin {
+ public:
+  string pinName;
+  string correspondNetName;
+  int x, y;
+};
 
 class Net {
  public:
   string name;
   vector<Cell *> connectedCells;
+  vector<Pin *> connectedPins;
 };
 
-class Pin {
- public:
-  string pinName;
-  vector<string> correspondNetNames;
-  int x, y;
-};
 #endif //EPLACEPRACTICE_SRC_DATASTRUCTURE_CELL_H_
